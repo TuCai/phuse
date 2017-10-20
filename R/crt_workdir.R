@@ -8,8 +8,9 @@
 #' @return the created directory
 #' @export
 #' @examples
-#'   f1 <- "/Users/htu"
-#'   r1 <- crt_workdir(f1)
+#'   d1 <- tempdir()
+#'   r1 <- crt_workdir(d1)
+#'   r2 <- crt_workdir(d1, to_crt_dir = FALSE) # just return the dir
 #' @author Hanming Tu
 #' @name crt_workdir
 # ---------------------------------------------------------------------------

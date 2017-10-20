@@ -9,7 +9,7 @@
 #' @export
 #' @examples
 #'   fns <- c("dm.xpt","ex.xpt")
-#'   dir <- "/Users/htu/myRepo/data"
+#'   dir <- tempdir()
 #'   # a <- download_script_files(fns, dir)
 #' @author Hanming Tu
 #' @name download_script_files

@@ -1,0 +1,243 @@
+<html>
+
+<head>
+  <title>PhUSE KPI</title>
+  <script src="shared/jquery.js" type="text/javascript"></script>
+  <script src="shared/shiny.js" type="text/javascript"></script>
+  <script src="https://d3js.org/d3.v3.min.js"></script>
+  <link rel="stylesheet" type="text/css" href="shared/shiny.css"/>
+  <link rel="stylesheet" type="text/css" href="styles/kpi.css"/>
+</head>
+
+<body>
+
+<h1>Test D3 </h1>
+
+<h2>1. Some shapes</h2>
+
+ <svg width="500" height="250">
+    <circle cx="25" cy="25" r="22"
+     fill="blue" stroke="gray" stroke-width="2"/>
+    <circle cx="25" cy="50" r="22"
+     fill="yellow" stroke="orange" stroke-width="5"/>
+    <circle cx="50" cy="75" r="25" class="pumpkin"/>
+    <rect x="50" y="80" width="30" height="30" fill="purple"/>
+    <rect x="70" y="85" width="30" height="30" fill="blue"/>
+    <rect x="90" y="90" width="30" height="30" fill="green"/>
+    <rect x="100" y="115" width="30" height="30" fill="yellow"/>
+    <rect x="120" y="120" width="30" height="30" fill="red"/>
+    <circle cx="125" cy="125" r="20" fill="rgba(128, 0, 128, 1.0)"/>
+    <circle cx="150" cy="125" r="20" fill="rgba(0, 0, 255, 0.75)"/>
+    <circle cx="175" cy="125" r="20" fill="rgba(0, 255, 0, 0.5)"/>
+    <circle cx="200" cy="125" r="20" fill="rgba(255, 255, 0, 0.25)"/>
+    <circle cx="225" cy="125" r="20" fill="rgba(255, 0, 0, 0.1)"/>
+ </svg>
+
+ <script type="text/javascript">
+
+  d3.select("body").append("h2").text("2. Simple Bar Chart Using Div");
+
+  var dataset = [];                        //Initialize empty array
+  for (var i = 0; i < 25; i++) {           //Loop 25 times
+    var newNumber = Math.random() * 30;  //New random number (0-30)
+    dataset.push(newNumber);             //Add new number to array
+  };
+
+  d3.select("body").selectAll("div")
+    .data(dataset)
+    .enter()
+    .append("div")
+    .attr("class", "bar")
+    .style("height", function(d) {
+      var barHeight = d * 5;  //Scale up by factor of 5
+      return barHeight + "px";
+     });
+
+  d3.select("body").append("h2").text("3. New Circles!");
+  // ------------------------------------------------------------------------
+
+  //Width and height
+  var w = 500;
+  var h = 150;
+  var s2 = d3.select("body")
+            .append("svg")
+            .attr("width", w)   // <-- Here
+            .attr("height", h); // <-- and here!
+  var ds2 = [ 5, 10, 15, 20, 25 ];
+  s2.selectAll("circle")
+    .data(ds2)
+    .enter()
+    .append("circle");
+  var circles = s2.selectAll("circle")
+                 .data(dataset)
+                 .enter()
+                 .append("circle");
+  circles.attr("cx", function(d, i) { return (i * 50) + 25; })
+    .attr("cy", h/2)
+    .attr("r", function(d) { return d; })
+    .attr("fill", "yellow")
+    .attr("stroke", "orange")
+    .attr("stroke-width", function(d) { return d/2; });
+
+  d3.select("body").append("h2").text("4. New Bar Chart");
+  // ------------------------------------------------------------------------
+
+  //Create SVG element
+  var ds4 = [ 5, 10, 13, 19, 21, 25, 22, 18, 15, 13,
+                11, 12, 15, 20, 18, 17, 16, 18, 23, 25 ];
+  var barPadding = 1;  // <-- New!
+  var s2 = d3.select("body")
+            .append("svg")
+            .attr("width", w)
+            .attr("height", h);
+
+  s2.selectAll("rect")
+    .data(ds4)
+    .enter()
+    .append("rect")
+    .attr("x", function(d, i) {
+      return i * (w / ds4.length);
+    })
+    .attr("y", function(d) {
+      return h - (d*4);  //Height minus data value
+     })
+    .attr("width", w / ds4.length - barPadding)
+    .attr("height", function(d) {  return d*4; })
+    .attr("fill", function(d) { return "rgb(0, 0, " + (d * 10) + ")"; })
+    ;
+  s2.selectAll("text")
+    .data(ds4)
+    .enter()
+    .append("text")
+    .text(function(d) { return d;  })
+    .attr("x", function(d, i) {
+        return i * (w / ds4.length) + (w / ds4.length - barPadding) / 2;
+    })
+    .attr("y", function(d) {
+        return h - (d * 4) + 14;  //15 is now 14
+    })
+    .attr("font-family", "sans-serif")
+    .attr("font-size", "11px")
+    .attr("fill", "white")
+    .attr("text-anchor", "middle")
+    ;
+
+
+  d3.select("body").append("h2").text("5. Tool Tips");
+  // ------------------------------------------------------------------------
+  // Set the dimensions of the canvas / graph
+  var margin = {top: 30, right: 20, bottom: 30, left: 50},
+    width = 600 - margin.left - margin.right,
+    height = 270 - margin.top - margin.bottom;
+
+      d3.select("body").append("p").text("It is OK1");
+
+  // Parse the date / time
+  var parseDate = d3.time.format("%d-%b-%y").parse;
+  var formatTime = d3.time.format("%e %B");
+  // Format tooltip date / time
+
+  d3.select("body").append("p").text("It is OK2");
+
+
+  // Set the rangestrann
+  var x = d3.time.scale().range([0, width]);
+  var y = d3.scale.linear().range([height, 0]);
+  // Define the axes
+  var xAxis = d3.svg.axis().scale(x)
+    .orient("bottom").ticks(5);
+  var yAxis = d3.svg.axis().scale(y)
+    .orient("left").ticks(5);
+  // Define the line
+  var valueline = d3.svg.line()
+    .x(function(d) { return x(d.date); })
+    .y(function(d) { return y(d.close); });
+
+  // Define 'div' for tooltips
+  var div = d3.select("body")
+    .append("div")  // declare the tooltip div
+    .attr("class", "tooltip")
+    .style("opacity", 0);
+
+  // Adds the svg canvas
+  var svg = d3.select("body")
+    .append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+    .append("g")
+    .attr("transform",
+          "translate(" + margin.left + "," + margin.top + ")");
+
+   d3.select("body").append("p").text("It is OK3");
+
+  // Get the data
+  d3.csv("datatips.csv", function(error, data) {
+    data.forEach(function(d) {
+        d.date = parseDate(d.date);
+        d.close = +d.close;
+    });
+
+    d3.select("body").append("p").text("ERROR: " + error);
+
+    // Scale the range of the data
+    x.domain(d3.extent(data, function(d) { return d.date; }));
+    y.domain([0, d3.max(data, function(d) { return d.close; })]);
+    // Add the valueline path.
+    svg.append("path")
+        .attr("class", "line")
+        .attr("d", valueline(data));
+    // draw the scatterplot
+    svg.selectAll("dot")
+        .data(data)
+        .enter().append("circle")
+        .attr("r", 5)
+        .attr("cx", function(d) { return x(d.date); })
+        .attr("cy", function(d) { return y(d.close); })
+    // Tooltip stuff after this
+        .on("mouseover", function(d) {
+            div.transition()
+                .duration(500)
+                .style("opacity", 0);
+            div.transition()
+                .duration(200)
+                .style("opacity", .9);
+            div.html(
+                '<a href= "'+d.link+'" target="_blank">' + //with a link
+                formatTime(d.date) +
+                "</a>" +
+                "<br/>"  + d.close)
+                .style("left", (d3.event.pageX) + "px")
+                .style("top", (d3.event.pageY - 28) + "px");
+            });
+    // Add the X Axis
+    svg.append("g")
+        .attr("class", "x axis")
+        .attr("transform", "translate(0," + height + ")")
+        .call(xAxis);
+    // Add the Y Axis
+    svg.append("g")
+        .attr("class", "y axis")
+        .call(yAxis);
+  });
+
+d3.select("body").append("h2").text("End of the script");
+
+</script>
+
+
+
+
+<p>This is an R HTML document. When you click the <b>Knit HTML</b> button a web page will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:</p>
+
+<!--begin.rcode
+summary(cars)
+end.rcode-->
+
+<p>You can also embed plots, for example:</p>
+
+<!--begin.rcode fig.width=7, fig.height=6
+plot(cars)
+end.rcode-->
+
+</body>
+</html>

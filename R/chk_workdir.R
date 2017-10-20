@@ -8,7 +8,7 @@
 #' @return TRUE or FALSE
 #' @export
 #' @examples
-#'   f1 <- "/Users/htu/myRepo"
+#'   f1 <- tempdir()
 #'   r1 <- chk_workdir(f1)
 #' @author Hanming Tu
 #' @name chk_workdir
