@@ -18,3 +18,4 @@ LazyData: true
 RoxygenNote: 6.0.1
 Suggests: testthat
 Imports: yaml, shiny, RCurl, git2r
+
