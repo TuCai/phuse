@@ -8,9 +8,11 @@
 #' @return the created directory
 #' @export
 #' @examples
+#' \dontrun{
 #'   d1 <- tempdir()
 #'   r1 <- crt_workdir(d1)
 #'   r2 <- crt_workdir(d1, to_crt_dir = FALSE) # just return the dir
+#' }
 #' @author Hanming Tu
 #' @name crt_workdir
 # ---------------------------------------------------------------------------
@@ -18,6 +20,7 @@
 #  09/12/2017 (htu) - initial creation
 #  09/14/2017 (htu) - added to_crt_dir = FALSE to just return dir name
 #    and Linux, Windows options
+#  11/26/2017 (htu) - changed the default folder from /Users to
 #
 crt_workdir <- function(
   top_dir = NULL,
@@ -27,12 +30,17 @@ crt_workdir <- function(
   if (is.null(top_dir))     {
     sys_name <- Sys.info()[["sysname"]]
     usr_name <- Sys.info()[["user"]]
-    if (grepl("^(Darwin|Linux)", sys_name, ignore.case = TRUE)) {
-      r <- paste('/Users', usr_name, sub_dir, sep = '/');
-    } else if (grepl("^Windows", sys_name, ignore.case = TRUE)) {
-      r <- paste('c:/tmp', usr_name, sub_dir, sep = '/');
-    } else {
-      r <- paste(getwd(), usr_name, sub_dir, sep = '/');
+    rtop <- tempdir()
+    if (grepl("^(htu|hanming)", usr_name, ignore.case = TRUE)) {
+      if (grepl("^(Darwin|Linux)", sys_name, ignore.case = TRUE)) {
+        r <- paste('/Users', usr_name, sub_dir, sep = '/');
+      } else if (grepl("^Windows", sys_name, ignore.case = TRUE)) {
+        r <- paste('c:/tmp', usr_name, sub_dir, sep = '/');
+      } else {
+        r <- paste(getwd(), usr_name, sub_dir, sep = '/');
+      }
+    } else  {
+      r <- paste(rtop, usr_name, sub_dir, sep = '/');
     }
   } else {
     r <- paste(top_dir, sub_dir, sep = '/')

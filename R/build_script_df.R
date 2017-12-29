@@ -31,12 +31,15 @@
 #' @importFrom git2r is_empty
 #' @importFrom stats setNames
 #' @examples
+#'\dontrun{
 #'   r1 <- build_script_df()
 #'   r2 <- build_script_df(upd_opt = "file")
 #'   r3 <- build_script_df(upd_opt = "repo")
 #'   r4 <- build_script_df(upd_opt = "both")
+#'}
 #' @author Hanming Tu
 #' @name build_script_df
+#
 # ---------------------------------------------------------------------------
 # HISTORY   MM/DD/YYYY (developer) - explanation
 #  09/08/2017 (htu) - initial creation

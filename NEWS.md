@@ -1,5 +1,7 @@
-; phuse_0.1.5 (Release Date: 9/25/2017)
+; phuse_0.1.5 (Release Date: 12/25/2017)
 # ---------------------------------------------------------------------------
+* Updated crt_workdir to use tempdir()
+* Removed some examples in build_script_df
 
 ; phuse_0.1.4 (Release Date: 9/25/2017)
 # ---------------------------------------------------------------------------

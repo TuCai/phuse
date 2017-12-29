@@ -41,10 +41,12 @@ Grep all the YML files, parse the metadata and build
   a data frame containing key metadata tags.
 }
 \examples{
+\dontrun{
   r1 <- build_script_df()
   r2 <- build_script_df(upd_opt = "file")
   r3 <- build_script_df(upd_opt = "repo")
   r4 <- build_script_df(upd_opt = "both")
+}
 }
 \author{
 Hanming Tu

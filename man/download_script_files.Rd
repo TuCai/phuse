@@ -23,7 +23,7 @@ download files defined in the input list from a repository.
 }
 \examples{
   fns <- c("dm.xpt","ex.xpt")
-  dir <- "/Users/htu/myRepo/data"
+  dir <- tempdir()
   # a <- download_script_files(fns, dir)
 }
 \author{

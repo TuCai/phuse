@@ -22,8 +22,11 @@ the created directory
 define and create a work directory.
 }
 \examples{
-  f1 <- "/Users/htu"
-  r1 <- crt_workdir(f1)
+\dontrun{
+  d1 <- tempdir()
+  r1 <- crt_workdir(d1)
+  r2 <- crt_workdir(d1, to_crt_dir = FALSE) # just return the dir
+}
 }
 \author{
 Hanming Tu
