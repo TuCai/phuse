@@ -3,10 +3,11 @@
 #' @param n Example number
 #' @export
 #' @examples
+#'\dontrun{
 #'   library(phuse)
-#'   # comment out the interactive sessions
-#'   # start_phusee()  # default to "02_display"
-#'   # start_phuse(1)  # start "01_html"
+#'   start_phusee()  # default to "02_display"
+#'   start_phuse(1)  # start "01_html"
+#'}
 #' @author Hanming Tu
 #' @name start_phuse
 # ---------------------------------------------------------------------------

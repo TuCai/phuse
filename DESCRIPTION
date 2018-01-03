@@ -7,7 +7,7 @@ Authors@R: c(
   person("Hanming", "Tu", email = "hanming.tu@gmail.com",role = c("aut", "cre"))
   )
 Maintainer: Hanming Tu <hanming.tu@gmail.com>
-Description: Make it easy to review, download and execute scripts stored in GitHub
+Description: Make it easy to review, download and execute scripts stored in Github
   'phuse-scripts' repository <https://github.com/phuse-org/phuse-scripts>. Some examples
   included show the web application framework using the script metadata. The 'PhUSE'
   is Pharmaceutical Users Software Exchange <http://www.phuse.eu>.

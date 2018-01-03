@@ -17,10 +17,10 @@ build_script_df(repo_url = "https://github.com/phuse-org/phuse-scripts.git",
 "https://github.com/phuse-org/phuse-scripts/raw/master"}
 
 \item{repo_dir}{a local directory to host the repository;
-default to current work directory if not specified}
+default to work_dir from crt_workdir if not specified}
 
 \item{work_dir}{a local directory to host the files containing
-a list of YML files; default to {getwd}/myRepo}
+a list of YML files; default to {tempdir()}/myRepo}
 
 \item{output_fn}{a CSV file name for outputing a list of YML files;
 default to "{repo_name}_yml.csv}

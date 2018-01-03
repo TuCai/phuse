@@ -8,11 +8,11 @@
 #' @return the created directory
 #' @export
 #' @examples
-#' \dontrun{
+#'\dontrun{
 #'   d1 <- tempdir()
 #'   r1 <- crt_workdir(d1)
 #'   r2 <- crt_workdir(d1, to_crt_dir = FALSE) # just return the dir
-#' }
+#'}
 #' @author Hanming Tu
 #' @name crt_workdir
 # ---------------------------------------------------------------------------
@@ -20,7 +20,7 @@
 #  09/12/2017 (htu) - initial creation
 #  09/14/2017 (htu) - added to_crt_dir = FALSE to just return dir name
 #    and Linux, Windows options
-#  11/26/2017 (htu) - changed the default folder from /Users to
+#  11/26/2017 (htu) - changed the default folder from /Users to tempdir()
 #
 crt_workdir <- function(
   top_dir = NULL,

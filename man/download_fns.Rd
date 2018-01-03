@@ -19,6 +19,7 @@ Default to "https://github.com/phuse-org/phuse-scripts/raw/master"}
 download files defined in the input data frame.
 }
 \examples{
+\dontrun{
   a <- "https://github.com/phuse-org/phuse-scripts/raw/master"
   b <- "development/R/scripts"
   c <- "Draw_Dist2_R.yml"
@@ -26,6 +27,7 @@ download files defined in the input data frame.
   f2 <- read_yml(f1)
   f3 <- extract_fns(f2)
   f4 <- download_fns(f3)
+}
 }
 \author{
 Hanming Tu

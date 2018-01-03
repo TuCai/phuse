@@ -6,12 +6,14 @@
 #' @return target directory name
 #' @export
 #' @examples
+#'\dontrun{
 #'   a <- "https://github.com/phuse-org/phuse-scripts/raw/master"
 #'   b <- "development/R/scripts"
 #'   c <- "Draw_Dist2_R.yml"
 #'   f1 <- paste(a,b,c, sep = '/')
 #'   f2 <- read_yml(f1)
 #'   f3 <- download_script(f2)
+#'}
 #' @author Hanming Tu
 #' @name download_script
 # ---------------------------------------------------------------------------

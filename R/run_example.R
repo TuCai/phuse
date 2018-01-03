@@ -8,9 +8,10 @@
 #' @param display.mode modes are auto, normal or showcase
 #' @export
 #' @examples
+#'\dontrun{
 #'   library(phuse)
-#'   # I have to comment it out so it can pass "R CMD check --as-cran"
-#'   # run_example("02_display")
+#'   run_example("02_display")
+#'}
 #' @author Hanming Tu
 #' @name run_example
 # ---------------------------------------------------------------------------

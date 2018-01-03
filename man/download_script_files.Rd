@@ -22,9 +22,11 @@ Default to "https://github.com/phuse-org/phuse-scripts/raw/master"}
 download files defined in the input list from a repository.
 }
 \examples{
+\dontrun{
   fns <- c("dm.xpt","ex.xpt")
   dir <- tempdir()
-  # a <- download_script_files(fns, dir)
+  a <- download_script_files(fns, dir)
+}
 }
 \author{
 Hanming Tu

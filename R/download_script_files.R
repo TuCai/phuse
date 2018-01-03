@@ -8,9 +8,11 @@
 #' @importFrom utils download.file
 #' @export
 #' @examples
+#'\dontrun{
 #'   fns <- c("dm.xpt","ex.xpt")
 #'   dir <- tempdir()
-#'   # a <- download_script_files(fns, dir)
+#'   a <- download_script_files(fns, dir)
+#'}
 #' @author Hanming Tu
 #' @name download_script_files
 # ---------------------------------------------------------------------------

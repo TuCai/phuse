@@ -6,9 +6,9 @@
 #' @param repo_base a URL for repository base folder; default to
 #'   "https://github.com/phuse-org/phuse-scripts/raw/master"
 #' @param repo_dir a local directory to host the repository;
-#'   default to current work directory if not specified
+#'   default to work_dir from crt_workdir if not specified
 #' @param work_dir a local directory to host the files containing
-#'   a list of YML files; default to {getwd}/myRepo
+#'   a list of YML files; default to {tempdir()}/myRepo
 #' @param output_fn a CSV file name for outputing a list of YML files;
 #'   default to "{repo_name}_yml.csv
 #' @param days_to_update number of days before the output_fn is updated;

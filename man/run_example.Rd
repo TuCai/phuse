@@ -26,9 +26,10 @@ run_example(example = NA, pkg = "phuse", port = NULL,
 run examples stored in the example folder.
 }
 \examples{
+\dontrun{
   library(phuse)
-  # I have to comment it out so it can pass "R CMD check --as-cran"
-  # run_example("02_display")
+  run_example("02_display")
+}
 }
 \author{
 Hanming Tu
