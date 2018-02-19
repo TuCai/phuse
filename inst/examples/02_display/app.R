@@ -10,7 +10,7 @@ library(phuse)
  fns <- build_script_df();
 #}
 # txt <- readChar("www/links.txt",nchars=1e6)
-sel <- fns[,1]; names(sel) <- fns[,2]
+ff <- fns[,1]; names(ff) <- fns[,2]; sel <- ff[order(names(ff))]
 # h_a <- "<a href='%s' title='%s'>%s</a>"
 
 
