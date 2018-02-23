@@ -3,7 +3,7 @@
 #'   command line or script metadata.
 #' @param fn a file name or URL pointing to script metadata file
 #' @param input the input parameter from shiny webpage
-#' @param  cmd the cmmandArgs
+#' @param cmd the cmmandArgs
 #' @return a list of input values provided for the script
 #' @export
 #' @examples
@@ -26,7 +26,7 @@ get_inputs <- function(fn = NULL, input = NULL, cmd = NULL) {
   r <- list()
   # 2. get inputs from interactive session first
   k <- 0
-  if (exists("input")) {
+  if (exists("input") && ! is.null(input)) {
     str("Getting inputs from shiny app...")
     for (i in 1:20) {
       v <- paste0("p", i)
@@ -37,19 +37,22 @@ get_inputs <- function(fn = NULL, input = NULL, cmd = NULL) {
 
   # 3. check inputs from command line
   #
-  str(cmd)
-  if ("script_name" %in% names(cmd)) {
-    yml_name    <- gsub('.([[:alnum:]]+)$','_\\1.yml', cmd["script_name"])
-    r <- get_yml_inputs(yml_name)
+  if (! is.null(cmd)) {
+    str("Getting inputs from cmd line...")
+    str(cmd)
+    if ("script_name" %in% names(cmd)) {
+      yml_name    <- gsub('.([[:alnum:]]+)$','_\\1.yml', cmd["script_name"])
+      r <- get_yml_inputs(yml_name)
+      return(r)
+    }
+    str("Getting inputs from command line...")
+    if (grepl('phuse', cmd[1],  ignore.case = TRUE)) {
+      r <- cmd[-1]
+      if ("script_name" %in% names(r)) { r$script_name <- NULL }
+      if (length(r)>0) { return(r) }
+    }
     return(r)
   }
-  str("Getting inputs from command line...")
-  if (grepl('phuse', cmd[1],  ignore.case = TRUE)) {
-    r <- cmd[-1]
-    if ("script_name" %in% names(r)) { r$script_name <- NULL }
-    if (length(r)>0) { return(r) }
-  }
-
   # 4. get inputs from script metadata
   str("Getting inputs from YML file...")
   sfo <- sys.frame(1)$ofile

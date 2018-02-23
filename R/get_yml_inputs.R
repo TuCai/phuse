@@ -36,13 +36,13 @@ get_yml_inputs <- function(fn = NULL) {
     cat(paste0("ERROR: no Inputs defined in ", yml_name))
     return(r)
   }
-  k <- 0
-  for (i in 1:20) {
-    v <- paste0("p", i)
-    if (v %in% names(cfg$Inputs)) { k <- k + 1;
-    # we need to remove any R Shiny specification here
-    r[k] <- gsub('\\s+-.+','', cfg$Inputs[[v]])
-    }
-  }
-  return(r)
+  # k <- 0
+  # for (i in 1:20) {
+  #  v <- paste0("p", i)
+  #  if (v %in% names(cfg$Inputs)) { k <- k + 1;
+  #  # we need to remove any R Shiny specification here
+  #  r[k] <- gsub('\\s+-.+','', cfg$Inputs[[v]])
+  #  }
+  #}
+  return(cfg)
 }
