@@ -60,8 +60,8 @@ build_script_df <- function(
   upd_opt = NULL
 ) {
   # rm(list=ls())
-  if (is.null(repo_url))     { sprintf("%s","repo is null"); return(); }
-  if (!url.exists(repo_url)) { sprintf("%s",paste(repo_url, " does not exist!")); return(); }
+  if (is.null(repo_url))     { str(sprintf("%s","repo is null")); return(); }
+  if (!url.exists(repo_url)) { str(sprintf("%s",paste(repo_url, " does not exist!"))); return(); }
 
   # path <- tempfile(pattern="git2r-")
   # cur_dir  <- getwd()
