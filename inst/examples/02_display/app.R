@@ -1,6 +1,10 @@
 library(shiny)
 library(RCurl)
 library(phuse)
+library(ggvis)
+library(diffobj)
+library(ggplot2)
+library(dplyr)
 
 #if (grepl('^(127|local)',session$clientData$url_hostname)) {
 #  dr <- resolve(system.file("examples", package = "phuse"), "02_display")
@@ -53,6 +57,7 @@ ui <- fluidPage(
                   tabPanel("Metadata", tableOutput("mtable")),
                   tabPanel("Verify", tableOutput("verify")),
                   tabPanel("Download", tableOutput("dnload")),
+                  tabPanel("Diff", verbatimTextOutput("diff")),
                   tabPanel("Merge", tableOutput("merge")),
                   # tabPanel("Execute", verbatimTextOutput("execute"))
                   tabPanel("Execute", plotOutput("execute"))
@@ -156,6 +161,20 @@ server <- function(input, output, session) {
       data.frame(msg)
     }
     }, rownames = TRUE )
+
+  output$diff <- renderPrint({
+    f1 <- fn()
+    file_name <- basename(f1)
+    work_dir  <- crt_workdir(to_crt_dir = FALSE)
+    f2 <- paste(work_dir, "scripts", file_name, sep = '/')
+    if (file.exists(f2)) {
+      diffFile(f1,f2)
+    } else {
+      msg <- c(paste0("Repo: ", f1), paste0("Loc : ", f2, " does not exists."));
+      msg
+    }
+  })
+
 
   output$execute <- renderPlot({
     # if (!is.null(input$yml_name)) {

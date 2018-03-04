@@ -48,6 +48,7 @@
 #  09/12/2017 (htu) - used crt_workdir for work_dir and repo_dir
 #  09/14/2017 (htu) - added upd_opt variable when fn_only is FALSE
 #  09/19/2017 (htu) - added read.csv and write.csv to import form
+#  03/04/2018 (htu) - commented out url.exists from RCurl used new function url.exists
 #
 build_script_df <- function(
   repo_url = 'https://github.com/phuse-org/phuse-scripts.git',
@@ -134,7 +135,28 @@ build_script_df <- function(
   return(r)
 }
 
-url.exists <- function (url,show=FALSE)
+#' Check URL based on httr package
+#' @description Check if URL exists.
+#' @param url a URL for a remote repository and default to
+#'   'https://github.com/phuse-org/phuse-scripts.git'
+#' @param show bolean variable; default to FALSE
+#' @return TRUE or FALSE
+#' @importFrom RCurl basicTextGatherer
+#' @importFrom httr GET
+#' @export
+#' @examples
+#'   url.exists('https://github.com/phuse-org/phuse-scripts.git')
+#' @author Hanming Tu
+#' @name url.exists
+#
+# ---------------------------------------------------------------------------
+# HISTORY   MM/DD/YYYY (developer) - explanation
+#  03/04/2018 (htu) - initial creation
+#
+
+url.exists <- function (
+  url='https://github.com/phuse-org/phuse-scripts.git',
+  show=FALSE)
 {
   # check existance using httr library
   g = basicTextGatherer()

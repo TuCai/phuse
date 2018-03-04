@@ -17,12 +17,14 @@ convert list to a data frame with the following structure:
   variable, level, type, value
 }
 \examples{
+\dontrun{
   a <- "https://github.com/phuse-org/phuse-scripts/raw/master"
   b <- "development/R/scripts"
   c <- "Draw_Dist2_R.yml"
   f1 <- paste(a,b,c, sep = '/')
   r1 <- read_yml(f1)
   r2 <- cvt_list2df(r1)
+}
 }
 \author{
 Hanming Tu

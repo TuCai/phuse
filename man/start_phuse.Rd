@@ -4,10 +4,22 @@
 \alias{start_phuse}
 \title{Start Phuse Web Application}
 \usage{
-start_phuse(n = 2)
+start_phuse(n = 2, pkg = "phuse", pt = NULL,
+  lb = getOption("shiny.launch.browser", interactive()),
+  ht = getOption("shiny.host", "127.0.0.1"), dm = "normal")
 }
 \arguments{
 \item{n}{Example number}
+
+\item{pkg}{package name}
+
+\item{pt}{Port number}
+
+\item{lb}{define the browser- shiny.launch.browser}
+
+\item{ht}{define the host or ip address}
+
+\item{dm}{display modes are auto, normal or showcase}
 }
 \description{
 start phuse web appllication framework.

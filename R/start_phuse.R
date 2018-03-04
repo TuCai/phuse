@@ -1,6 +1,11 @@
 #' Start Phuse Web Application
 #' @description start phuse web appllication framework.
 #' @param n Example number
+#' @param pkg  package name
+#' @param pt Port number
+#' @param lb define the browser- shiny.launch.browser
+#' @param ht define the host or ip address
+#' @param dm display modes are auto, normal or showcase
 #' @export
 #' @examples
 #'\dontrun{

@@ -3,6 +3,7 @@
 #' @name app_test_merge
 
 library(shiny)
+library(diffobj)
 
 # Define UI for dataset viewer app ----
 ui <- fluidPage(
@@ -26,12 +27,12 @@ ui <- fluidPage(
       # Input: Selector for choosing dataset ----
       selectInput(inputId = "dataset",
                   label = "Choose a dataset:",
-                  choices = c("Online", "Local", "Merged")),
+                  choices = c("Online", "Local", "Merged","Diff")),
 
       # Input: Numeric entry for number of obs to view ----
       numericInput(inputId = "obs",
                    label = "Number of observations to view:",
-                   value = 10)
+                   value = 50)
 
     ),
 
@@ -75,7 +76,8 @@ server <- function(input, output) {
     switch(input$dataset,
            "Online" = d1,
            "Local" = d2,
-           "Merged" = d3)
+           "Merged" = d3,
+           "Diff" = diffFile(f1,f2))
   })
 
   # Create caption ----

@@ -1,3 +1,10 @@
+phuse_0.1.5 (Release Date: 3/25/2018)
+# ---------------------------------------------------------------------------
+* Added get_inputs, url.exists in build_script_df
+* Added examples 03_showenv, o4_merge, 05_d3
+* Updated chk_workdir, run_example, merge_lists, crt_workdir, create_dir,
+  get_yml_inputs, read_yml, start_phuse
+
 phuse_0.1.4 (Release Date: 9/25/2017)
 # ---------------------------------------------------------------------------
 * Added start_phuse, cvt_class2df

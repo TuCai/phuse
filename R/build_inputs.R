@@ -4,13 +4,15 @@
 #' @return R shiny code for providing inputs to the script
 #' @export
 #' @examples
+#'\dontrun{
 #'   a <- "https://github.com/phuse-org/phuse-scripts/raw/master"
 #'   b <- "development/R/scripts"
 #'   c <- "Draw_Dist2_R.yml"
 #'   f1 <- paste(a,b,c, sep = '/')
 #'   r1 <- build_inputs(f1)
+#'}
 #' @author Hanming Tu
-#' @name buiuld_inputs
+#' @name build_inputs
 # ---------------------------------------------------------------------------
 # HISTORY   MM/DD/YYYY (developer) - explanation
 #  09/13/2017 (htu) - initial creation

@@ -5,7 +5,7 @@
 #' @export
 #' @importFrom yaml yaml.load
 #' @importFrom yaml yaml.load_file
-#' @importFrom RCurl url.exists
+# #' @importFrom RCurl url.exists
 #' @examples
 #'   a <- "https://github.com/phuse-org/phuse-scripts/raw/master"
 #'   b <- "development/R/scripts"
