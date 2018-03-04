@@ -17,6 +17,12 @@ Environment:
     msg_lvl: 3
     log_lvl: 1
     write2log: FALSE
+  db_conn:
+    usr: xxx
+    pwd: xxx
+    host: xxxx
+    sid: xxxx
+    port: 1521
 Inputs:
   datasets: dm.xpt,ae.xpt,testfile.xlsx
   p1: String - dataset name

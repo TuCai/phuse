@@ -25,7 +25,7 @@
 #' @importFrom utils str
 #' @importFrom yaml yaml.load
 #' @importFrom yaml yaml.load_file
-#' @importFrom RCurl url.exists
+# #' @importFrom RCurl url.exists
 #' @importFrom git2r clone
 #' @importFrom git2r init
 #' @importFrom git2r is_empty
@@ -133,3 +133,23 @@ build_script_df <- function(
   if (fn_only && file.exists(wk_fn)) { return(wk_fn); }
   return(r)
 }
+
+url.exists <- function (url,show=FALSE)
+{
+  # check existance using httr library
+  g = basicTextGatherer()
+  failed = FALSE
+  ans = tryCatch(GET(url), COULDNT_RESOLVE_HOST = function(x) failed <<- TRUE,
+                 error = function(x) failed <<- TRUE)
+  if (failed)
+    return(FALSE)
+  else if (grepl("Page not found", ans)) {
+    if (show) print(ans)
+    return(FALSE)
+  }
+  else{
+    if (show) print(ans)
+    return(TRUE)
+  }
+}
+
