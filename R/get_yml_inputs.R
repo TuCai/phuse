@@ -32,10 +32,17 @@ get_yml_inputs <- function(fn = NULL) {
   }
   # 3. read YML content
   cfg <- read_yml(yml_name)
-  if (! "Inputs" %in% names(cfg)) {
+  if (! ("Inputs" %in% names(cfg) || "Parameters" %in% names(cfg) )) {
     cat(paste0("ERROR: no Inputs defined in ", yml_name))
     return(r)
   }
+  if ("Inputs" %in% names(cfg)) {
+    r <- cfg$Inputs;
+  }
+  if ("Parameters" %in% names(cfg)) {
+    r[length(r)+1] <- cfg$Parameters;
+  }
+
   # k <- 0
   # for (i in 1:20) {
   #  v <- paste0("p", i)
@@ -44,5 +51,5 @@ get_yml_inputs <- function(fn = NULL) {
   #  r[k] <- gsub('\\s+-.+','', cfg$Inputs[[v]])
   #  }
   #}
-  return(cfg)
+  return(r)
 }

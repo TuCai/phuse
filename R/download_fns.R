@@ -57,6 +57,7 @@ download_fns <- function(
       msg[i] <- "Invalid URL"
     }
   }
+  str(paste("Downloaded to: ",tgtDir))
 
   r <- setNames(data.frame(matrix(ncol=4, nrow=i)), c("tag", "filename","file_url", "file_path"))
   if (i>0) {
