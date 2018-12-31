@@ -6,6 +6,7 @@
 #' @param lb define the browser- shiny.launch.browser
 #' @param ht define the host or ip address
 #' @param dm display modes are auto, normal or showcase
+#' @param msg_lvl message level
 #' @export
 #' @examples
 #'\dontrun{
@@ -19,6 +20,7 @@
 # HISTORY   MM/DD/YYYY (developer) - explanation
 #  09/21/2017 (htu) - initial creation
 #  03/04/2018 (htu) - skipped run_example
+#  10/18/2018 (htu) - added msg_lvl
 #
 
 # start_phuse <- function (n = 2)
@@ -28,12 +30,18 @@
 # }
 
 start_phuse <- function (n = 2, pkg = "phuse"
-                          , pt = NULL
-                          , lb = getOption("shiny.launch.browser",interactive())
-                          , ht = getOption("shiny.host", "127.0.0.1")
-                          # , dm = c("auto", "normal", "Normal")
-                          , dm =  "normal"
+                        , pt = NULL
+                        , lb = getOption("shiny.launch.browser",interactive())
+                        , ht = getOption("shiny.host", "127.0.0.1")
+                        # , dm = c("auto", "normal", "Normal")
+                        , dm =  "normal"
+                        , msg_lvl = NULL
 ) {
+  if (is.null(msg_lvl)) {
+    Sys.setenv("g_lvl"=0, "d_lvl"=0)
+  } else {
+    Sys.setenv("g_lvl"=msg_lvl, "d_lvl"=msg_lvl)
+  }
   apps    <- c("01_html","02_display","03_showenv","04_merge","05_d3");
   example <- apps[n];
   examplesDir <- system.file("examples", package = pkg )

@@ -6,7 +6,8 @@
 \usage{
 start_phuse(n = 2, pkg = "phuse", pt = NULL,
   lb = getOption("shiny.launch.browser", interactive()),
-  ht = getOption("shiny.host", "127.0.0.1"), dm = "normal")
+  ht = getOption("shiny.host", "127.0.0.1"), dm = "normal",
+  msg_lvl = NULL)
 }
 \arguments{
 \item{n}{Example number}
@@ -20,6 +21,8 @@ start_phuse(n = 2, pkg = "phuse", pt = NULL,
 \item{ht}{define the host or ip address}
 
 \item{dm}{display modes are auto, normal or showcase}
+
+\item{msg_lvl}{message level}
 }
 \description{
 start phuse web appllication framework.

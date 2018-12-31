@@ -1,3 +1,13 @@
+# ---------------------------------------------------------------------------
+# HISTORY
+#   MM/DD/YYYY (developer) - explanation
+#   03/13/2017 (htu) - initial creation
+#   ...
+#   10/18/2018 (htu) - started using search_github
+#   10/19/2019 (htu) - added output$show_search and output$search_for
+#
+# rm(list=ls())
+
 library(shiny)
 library(RCurl)
 library(phuse)
@@ -5,17 +15,12 @@ library(ggvis)
 library(diffobj)
 library(ggplot2)
 library(dplyr)
+library(httr)
+library(DT)
 
-#if (grepl('^(127|local)',session$clientData$url_hostname)) {
-#  dr <- resolve(system.file("examples", package = "phuse"), "02_display")
-#  f1 <- paste(dr, "www", "phuse-scripts_yml.csv", sep = '/')
-#  fns <- read.csv(file=f1, header=TRUE, sep=",")
-#} else {
- fns <- build_script_df();
-#}
-# txt <- readChar("www/links.txt",nchars=1e6)
-ff <- fns[,1]; names(ff) <- fns[,2]; sel <- ff[order(names(ff))]
-# h_a <- "<a href='%s' title='%s'>%s</a>"
+fns <- search_github('*.yml',out_type = 'fnlist');
+ff  <- fns[,1]; names(ff) <- fns[,2];
+sel <- ff[order(names(ff))]
 
 
 # Define UI for random distribution app ----
@@ -33,7 +38,7 @@ ui <- fluidPage(
 
       htmlOutput("selectUI"),
       radioButtons("src", "File Source:",
-                 c("Local" = "loc", "Repository" = "rep")),
+                 c("Local" = "loc", "Repository" = "rep", "Search" = "search")),
       # textOutput("result"),
       div(id="yml_name",class="shiny-text-output",style="display: none;"),
       div(id="sel_fn",class="shiny-text-output",style="display: none;"),
@@ -41,10 +46,9 @@ ui <- fluidPage(
       br(),
       # div(id="script_inputs",class="shiny-html-output")
       # includeHTML("www/s01.txt"),
-      conditionalPanel(
-        condition = "output.show_script_ui",
-        uiOutput("script_inputs")
-      )
+      conditionalPanel(condition="output.show_script",uiOutput("script_ins")),
+      conditionalPanel(condition="output.show_search",uiOutput("search_for"))
+
     ),
 
     # Main panel for displaying outputs ----
@@ -60,7 +64,8 @@ ui <- fluidPage(
                   tabPanel("Diff", verbatimTextOutput("diff")),
                   tabPanel("Merge", tableOutput("merge")),
                   # tabPanel("Execute", verbatimTextOutput("execute"))
-                  tabPanel("Execute", plotOutput("execute"))
+                  tabPanel("Execute", plotOutput("execute")),
+                  tabPanel("Search", DT::dataTableOutput("search"))
       )
     )
   )
@@ -85,17 +90,31 @@ server <- function(input, output, session) {
     f3
   })
 
+  # -------------------- Sidebar: Select Script  ----------------------------
   output$selectUI <- renderUI({ selectInput("file", "Select Script:", sel) })
 
   output$result <- renderText({ paste("Script File ID: ", input$file) })
   output$sel_fn <- renderText({ paste(fns[input$file,"file"]) })
   output$yml_name <- renderText({ as.character(fn()) })
-  output$show_script_ui <- reactive({
+  output$show_script <- reactive({
     f1 <- paste(fns[input$file,"file"])
     grepl('^Draw_Dist', f1, ignore.case = TRUE)
   })
-  outputOptions(output, 'show_script_ui', suspendWhenHidden = FALSE)
+  output$show_search <- reactive({ ifelse(input$src =="search",TRUE, FALSE) })
+  outputOptions(output, 'show_script', suspendWhenHidden = FALSE)
+  outputOptions(output, 'show_search', suspendWhenHidden = FALSE)
 
+  output$search_for <- renderUI({
+    tagList(
+    textInput("filename", label="File name:", value = "*.yml"
+              , placeholder = "Pattern for searching file names"),
+    textInput("stext", label="Key word: ", value = ""
+              , placeholder = "key words in files")
+    )
+  })
+
+
+  # -------------------- tabPanel: Script  ----------------------------------
   output$script <- renderText({
     # formulaText()
     # getURI(d())
@@ -117,6 +136,7 @@ server <- function(input, output, session) {
     }
   })
 
+  # -------------------- tabPanel: YML  -------------------------------------
   output$yml <- renderText({
     f1 <- fn()
     if (!file.exists(f1) && !url.exists(f1)) {
@@ -125,19 +145,23 @@ server <- function(input, output, session) {
     paste(paste0("File: ", f1),readChar(f1,nchars=1e6), sep = "\n")
   })
 
+  # -------------------- tabPanel: Info  ------------------------------------
   output$finfo <- renderTable({
     t1 <- t(fns[input$file,])
     # t1["file_url",] <- sprintf(h_a, t1["file_url",], t1["file_url",], t1["file",])
     t1
   }, rownames = TRUE )
 
+  # -------------------- tabPanel: Metadata  --------------------------------
   output$mtable <- renderTable({
     # yaml.load_file(URLencode(f1()[input$file,4]))
     m2()
   })
 
+  # -------------------- tabPanel: Verify  ----------------------------------
   output$verify <- renderTable({ extract_fns(read_yml(fn())) }, rownames = TRUE )
 
+  # -------------------- tabPanel: Download  --------------------------------
   output$dnload <- renderTable({
     y1 <- extract_fns(read_yml(fn()))
     y2 <- download_fns(y1)
@@ -146,6 +170,7 @@ server <- function(input, output, session) {
     y2
   }, rownames = TRUE )
 
+  # -------------------- tabPanel: Merge  -----------------------------------
   output$merge <- renderTable({
     f1 <- fn()
     file_name <- basename(f1)
@@ -162,6 +187,7 @@ server <- function(input, output, session) {
     }
     }, rownames = TRUE )
 
+  # -------------------- tabPanel: Diff  ------------------------------------
   output$diff <- renderPrint({
     f1 <- fn()
     file_name <- basename(f1)
@@ -176,7 +202,7 @@ server <- function(input, output, session) {
     }
   })
 
-
+  # -------------------- tabPanel: Execute  ---------------------------------
   output$execute <- renderPlot({
     # if (!is.null(input$yml_name)) {
     #  y2 <- input$yml_name
@@ -198,7 +224,17 @@ server <- function(input, output, session) {
     # }
   })
 
-  output$script_inputs <- renderUI({
+  # -------------------- tabPanel: Search  ----------------------------------
+  in_fn <- reactive({ input$filename })
+  output$search <- renderDataTable({
+    ff <- search_github(filename=in_fn(), out_type = 'fnlist')
+    cn <- c("fn_id", "script", "file");
+    datatable(ff[,cn]);
+  })
+
+  # -------------------- tabPanel: Script Inputs  ---------------------------
+  # Not done yet
+  output$script_ins <- renderUI({
     # y1 <- build_inputs(fn())
     c1 <- c("Normal"="rnorm","Uniform"="runif","Log-normal"="rlnorm","Exponential"="rexp");
     p1 <- c("p1","Distribution type:", c1);

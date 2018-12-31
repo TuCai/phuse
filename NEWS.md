@@ -1,7 +1,18 @@
-; phuse_0.1.5 (Release Date: 12/25/2017)
+; phuse_0.1.7 (Release Date: 12/31/2018)
 # ---------------------------------------------------------------------------
-* Updated crt_workdir to use tempdir()
-* Removed some examples in build_script_df
+* added is_empty, echo_msg, search_github
+
+; phuse_0.1.6 (Release Date: 09/15/2018)
+# ---------------------------------------------------------------------------
+* Updated get_inputs
+* fixed a bug reported by CRAN maintainer 
+
+; phuse_0.1.5 (Release Date: 3/25/2018)
+# ---------------------------------------------------------------------------
+* Added get_inputs, url.exists in build_script_df
+* Added examples 03_showenv, o4_merge, 05_d3
+* Updated chk_workdir, run_example, merge_lists, crt_workdir, create_dir,
+  get_yml_inputs, read_yml, start_phuse
 
 ; phuse_0.1.4 (Release Date: 9/25/2017)
 # ---------------------------------------------------------------------------

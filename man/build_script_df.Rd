@@ -4,7 +4,8 @@
 \alias{build_script_df}
 \title{Build Script Index Dataset}
 \usage{
-build_script_df(repo_url = "https://github.com/phuse-org/phuse-scripts.git",
+
+  build_script_df(repo_url = "https://github.com/phuse-org/phuse-scripts.git",
   repo_base = "https://github.com/phuse-org/phuse-scripts/raw/master",
   repo_dir = NULL, work_dir = NULL, output_fn = NULL,
   days_to_update = 7, fn_only = FALSE, upd_opt = NULL)
