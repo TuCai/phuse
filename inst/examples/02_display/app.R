@@ -5,6 +5,7 @@
 #   ...
 #   10/18/2018 (htu) - started using search_github
 #   10/19/2019 (htu) - added output$show_search and output$search_for
+#   01/01/2019 (htu) - merged Bob Friedman's code into output$script_inputs
 #
 # rm(list=ls())
 
@@ -15,8 +16,18 @@ library(ggvis)
 library(diffobj)
 library(ggplot2)
 library(dplyr)
+library(gridExtra)
 library(httr)
 library(DT)
+
+# to plot a message in the main panel
+plotMessage <- function(inString){
+  par(mar = c(0,0,0,0))
+  plot(c(0, 1), c(0, 1), ann = F, bty = 'n', type = 'n', xaxt = 'n', yaxt = 'n')
+  text(x = 0.34, y = 0.9, paste(inString),
+       cex = 1.5, col = "black", family="serif", font=2, adj=0.5)
+}
+
 
 fns <- search_github('*.yml',out_type = 'fnlist');
 ff  <- fns[,1]; names(ff) <- fns[,2];
@@ -44,8 +55,10 @@ ui <- fluidPage(
       div(id="sel_fn",class="shiny-text-output",style="display: none;"),
       # textInput("yn", "YML File Name: ", verbatimTextOutput("yml_name")),
       br(),
-      # div(id="script_inputs",class="shiny-html-output")
-      # includeHTML("www/s01.txt"),
+      conditionalPanel(
+        condition = "output.show_script_ui",
+        uiOutput("script_inputs")
+      ),
       conditionalPanel(condition="output.show_script",uiOutput("script_ins")),
       conditionalPanel(condition="output.show_search",uiOutput("search_for"))
 
@@ -100,17 +113,31 @@ server <- function(input, output, session) {
     f1 <- paste(fns[input$file,"file"])
     grepl('^Draw_Dist', f1, ignore.case = TRUE)
   })
-  output$show_search <- reactive({ ifelse(input$src =="search",TRUE, FALSE) })
   outputOptions(output, 'show_script', suspendWhenHidden = FALSE)
-  outputOptions(output, 'show_search', suspendWhenHidden = FALSE)
+  output$show_script_ui <- reactive({
+    # Show Shiny inputs if available, react if input file changes therefore access it
+    testForShinyUI <- FALSE
+    f1 <- input$file
+    r <- read_yml(fn())
+    if (!is.null(r$Inputs))	 {
+      y1 <- get_inputs(fn())
+      testForShinyUI <- !is.null(y1$RShinyUIs)
+    }
+    testForShinyUI
+  })
+  outputOptions(output, 'show_script_ui', suspendWhenHidden = FALSE)
 
+  output$show_search <- reactive({ ifelse(input$src =="search",TRUE, FALSE) })
+  outputOptions(output, 'show_search', suspendWhenHidden = FALSE)
   output$search_for <- renderUI({
+    if (input$src =="search") {
     tagList(
     textInput("filename", label="File name:", value = "*.yml"
               , placeholder = "Pattern for searching file names"),
     textInput("stext", label="Key word: ", value = ""
               , placeholder = "key words in files")
     )
+    }
   })
 
 
@@ -216,12 +243,13 @@ server <- function(input, output, session) {
     y2 <- gsub('_([[:alnum:]]+).([[:alnum:]]+)$','.\\1',fn())
     # str(y2)
     commandArgs <- function() list(prg="phuse", p1=input$p1, p2=input$p2, script_name=y2)
-    # if (file.exists(y2) || url.exists(y2)) {
+    if ( endsWith(toupper(y2),"R")) {
       source(y2, local = TRUE)
-    # } else {
-    #   msg <- paste0("ERROR: ", y2, " does not exist")
-    #   cat(msg)
-    # }
+    } else {
+      # show an error
+      print (append("Not an R script: ",y2))
+      plotMessage("Cannot execute other than an R script.")
+    }
   })
 
   # -------------------- tabPanel: Search  ----------------------------------
@@ -233,22 +261,65 @@ server <- function(input, output, session) {
   })
 
   # -------------------- tabPanel: Script Inputs  ---------------------------
-  # Not done yet
+  output$script_inputs <- renderUI({
+    # get inputs that are of the type RShinyUI
+    y1 <- get_inputs(fn())
+    if (!is.null(y1$RShinyUIs)) {
+      tagList(
+        # Below is actual rending from reading inputs in yml file
+        eval(parse(text=y1$RShinyUIs[[1]]$control)),
+        if (length(y1$RShinyUIs)>1) {
+          eval(parse(text=y1$RShinyUIs[[2]]$control))
+        },
+        if (length(y1$RShinyUIs)>2) {
+          eval(parse(text=y1$RShinyUIs[[3]]$control))
+        },
+        if (length(y1$RShinyUIs)>3) {
+          eval(parse(text=y1$RShinyUIs[[4]]$control))
+        },
+        if (length(y1$RShinyUIs)>4) {
+          eval(parse(text=y1$RShinyUIs[[5]]$control))
+        },
+        if (length(y1$RShinyUIs)>5) {
+          eval(parse(text=y1$RShinyUIs[[6]]$control))
+        },
+        if (length(y1$RShinyUIs)>6) {
+          eval(parse(text=y1$RShinyUIs[[7]]$control))
+        },
+        if (length(y1$RShinyUIs)>7) {
+          eval(parse(text=y1$RShinyUIs[[8]]$control))
+        },
+        if (length(y1$RShinyUIs)>8) {
+          eval(parse(text=y1$RShinyUIs[[9]]$control))
+        },
+        if (length(y1$RShinyUIs)>9) {
+          eval(parse(text=y1$RShinyUIs[[10]]$control))
+        }
+      )}
+
+  })
+
   output$script_ins <- renderUI({
-    # y1 <- build_inputs(fn())
-    c1 <- c("Normal"="rnorm","Uniform"="runif","Log-normal"="rlnorm","Exponential"="rexp");
-    p1 <- c("p1","Distribution type:", c1);
-    c2 <- c(value = 500,min = 1,max = 1000);
-    p2 <- c("p2","Number of observations:",c2);
-    tagList(radioButtons("p1","Distribution type:", c1), sliderInput("p2","Number of observations:",value = 500,min = 1,max = 1000
-                                                                     ))
-    # tagList(
-    #  sliderInput("p2","Number of observations:",value = 500,min = 1,max = 1000),
-    #  radioButtons("p1","Distribution type:",
-    #               c("Normal"="rnorm","Uniform"="runif","Log-normal"="rlnorm","Exponential"="rexp"))
-    #)
-    ## eval(call(y1))
-    ## includeScript("www/s01.R")
+    f1 <- paste(fns[input$file,"file"])
+    if (grepl('^Draw_Dist', f1, ignore.case = TRUE)) {
+      # y1 <- build_inputs(fn())
+      c1 <- c("Normal"="rnorm","Uniform"="runif","Log-normal"="rlnorm","Exponential"="rexp");
+      p1 <- c("p1","Distribution type:", c1);
+      c2 <- c(value = 500,min = 1,max = 1000);
+      p2 <- c("p2","Number of observations:",c2);
+      tagList(
+        radioButtons("p1","Distribution type:", c1)
+      , sliderInput("p2","Number of observations:",value = 500,min = 1,max = 1000)
+      )
+     tagList(
+        sliderInput("p2","Number of observations:",value = 500,min = 1,max = 1000)
+      , radioButtons("p1","Distribution type:",
+        c("Normal"="rnorm","Uniform"="runif","Log-normal"="rlnorm","Exponential"="rexp")
+        )
+     )
+     ## eval(call(y1))
+     ## includeScript("www/s01.R")
+    }
   })
 }
 

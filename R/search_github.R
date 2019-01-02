@@ -20,6 +20,7 @@
 #' @export
 #' @importFrom httr GET
 #' @importFrom httr content
+#' @importFrom stringr regex
 #' @importFrom stringr str_extract_all
 #' @examples
 #'\dontrun{
@@ -46,7 +47,6 @@ search_github <- function(
   , days_to_update = 7
   , fn_only = FALSE
 ) {
-
   prg <- "search_github"; echo_msg(prg,0.0,'Started', 1)
   msg <- paste("Inputs: filename=",filename,",rep_url=", rep_url
                , ",rep_dir=", rep_dir, ",out_type=",out_type);
@@ -99,13 +99,15 @@ search_github <- function(
     # h[["content"]];
     t <- content(h, type = "text", encoding = 'UTF-8');
     echo_msg(prg,3.2, paste("T len =", length(t)),3);
-    a <- unique(str_extract_all(t, regex(re1,ignore_case=TRUE))[[1]]);
+    s0 <- str_extract_all(t, regex(re1,ignore_case=TRUE));
+    a <- unique(s0[[1]]);
     echo_msg(prg,3.2, paste("A len =", length(a)),3);
     if (length(a) < 1 && p < 2) {
       # fn4t <- paste0(work_dir,'/',ext,'_', p,'.htm');
       # echo_msg(prg,3.2, paste("write to", fn4t),3);
       # write(t, fn4t);
-      a1 <- unique(str_extract_all(t, "<p>(.+)<br>\\n(.+)</p>")[[1]]);
+      s1 <- stringr::str_extract_all(t, "<p>(.+)<br>\\n(.+)</p>");
+      a1 <- unique(s1[[1]]);
       echo_msg(prg,3.2, a1,3);
       return(data.frame("fn_id"=a1,"script"="","file"=""))
     }

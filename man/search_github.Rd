@@ -6,17 +6,35 @@
 \usage{
 search_github(filename = "*.yml",
   rep_url = "https://github.com/phuse-org/phuse-scripts",
-  rep_dir = "tree/master", out_type = "fn")
+  rep_dir = "tree/master",
+  rep_base = "https://raw.githubusercontent.com/phuse-org/phuse-scripts/master",
+  out_type = "fn", work_dir = NULL, output_fn = NULL,
+  days_to_update = 7, fn_only = FALSE)
 }
 \arguments{
 \item{filename}{file names to be searched; default to *.yml.}
 
 \item{rep_url}{a URL for a remote repository and default to
-'https://github.com/phuse-org/phuse-scripts.git'}
+'https://github.com/phuse-org/phuse-scripts'}
 
-\item{rep_dir}{rep dir for file name}
+\item{rep_dir}{rep dir for file name; default to 'tree/master'}
+
+\item{rep_base}{a URL for repository base folder; default to
+"https://github.com/phuse-org/phuse-scripts/raw/master"}
 
 \item{out_type}{output type; default to 'fn' - just file names.}
+
+\item{work_dir}{a local directory to host the files containing
+a list of YML files; default to {tempdir()}/myRepo}
+
+\item{output_fn}{a CSV file name for outputing a list of YML files;
+default to "{repo_name}_yml.csv}
+
+\item{days_to_update}{number of days before the output_fn is updated;
+default to 7 days.
+Set it to a negative number make it to update immediately.}
+
+\item{fn_only}{return file name only; default to FALSE}
 }
 \value{
 a list of YML files
