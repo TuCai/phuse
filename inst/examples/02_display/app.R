@@ -20,6 +20,8 @@ library(gridExtra)
 library(httr)
 library(DT)
 
+options(shiny.trace = TRUE)
+
 # to plot a message in the main panel
 plotMessage <- function(inString){
   par(mar = c(0,0,0,0))

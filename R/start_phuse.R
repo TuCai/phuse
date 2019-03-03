@@ -33,7 +33,7 @@ start_phuse <- function (n = 2, pkg = "phuse"
                         , pt = NULL
                         , lb = getOption("shiny.launch.browser",interactive())
                         , ht = getOption("shiny.host", "127.0.0.1")
-                        # , dm = c("auto", "normal", "Normal")
+                        #, dm = c("auto", "normal", "Normal")
                         , dm =  "normal"
                         , msg_lvl = NULL
 ) {

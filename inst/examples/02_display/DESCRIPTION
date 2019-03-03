@@ -2,6 +2,6 @@ Title: Display
 Author: Hanming Tu
 AuthorUrl: http://www.rstudio.com/
 License: MIT
-DisplayMode: Showcase
+DisplayMode: normal
 Tags: getting-started
 Type: Shiny
