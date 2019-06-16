@@ -29,12 +29,10 @@ plotMessage <- function(inString){
   text(x = 0.34, y = 0.9, paste(inString),
        cex = 1.5, col = "black", family="serif", font=2, adj=0.5)
 }
-
-
-fns <- search_github('*.yml',out_type = 'fnlist');
+fns <- search_api();
 ff  <- fns[,1]; names(ff) <- fns[,2];
-sel <- ff[order(names(ff))]
-
+sel <- ff[order(names(ff))];
+dft_repo <- "C:/myCodes/phuse-org/phuse-scripts/trunk";
 
 # Define UI for random distribution app ----
 ui <- fluidPage(
@@ -52,6 +50,8 @@ ui <- fluidPage(
       htmlOutput("selectUI"),
       radioButtons("src", "File Source:",
                  c("Local" = "loc", "Repository" = "rep", "Search" = "search")),
+      textInput("loc_repo", label = "Loc Repo: ", value = dft_repo
+                , placeholder = "Local repo name"),
       # textOutput("result"),
       div(id="yml_name",class="shiny-text-output",style="display: none;"),
       div(id="sel_fn",class="shiny-text-output",style="display: none;"),
@@ -99,7 +99,7 @@ server <- function(input, output, session) {
     if (is.null(r)) { paste0("Error parsing ", f3) } else { r }
     })
   fn <- reactive({
-    f1 <- ifelse(input$src=="loc","file_path", "file_url")
+    f1 <- ifelse(input$src=="loc","file_path", "raw_url")
     f2 <- gsub('\r','', fns[input$file,f1], perl = TRUE)
     f3 <- ifelse(input$src=="loc",f2, URLencode(as.character(f2)))
     f3
@@ -126,12 +126,18 @@ server <- function(input, output, session) {
   output$script_inputs <- renderUI({
     # get inputs that are of the type RShinyUI
     y1 <- get_inputs(fn())
-    if (!is.null(y1$RShinyUIs)) {
+    n  <- length(y1$RShinyUIs)
+    # if (!is.null(y1$RShinyUIs)) {
+    if (n > 0) {
+      if (y1$RShinyUIs[[1]]$control == "app") {
+        source(fn())
+        # runApp(fn());
+      } else {
       tagList(
         # Below is actual rending from reading inputs in yml file
         eval(parse(text=y1$RShinyUIs[[1]]$control)),
         if (length(y1$RShinyUIs)>1) {
-          eval(parse(text=y1$RShinyUIs[[2]]$control))
+            eval(parse(text=y1$RShinyUIs[[2]]$control))
         },
         if (length(y1$RShinyUIs)>2) {
           eval(parse(text=y1$RShinyUIs[[3]]$control))
@@ -149,15 +155,16 @@ server <- function(input, output, session) {
           eval(parse(text=y1$RShinyUIs[[7]]$control))
         },
         if (length(y1$RShinyUIs)>7) {
-          eval(parse(text=y1$RShinyUIs[[8]]$control))
+         eval(parse(text=y1$RShinyUIs[[8]]$control))
         },
         if (length(y1$RShinyUIs)>8) {
           eval(parse(text=y1$RShinyUIs[[9]]$control))
         },
         if (length(y1$RShinyUIs)>9) {
-          eval(parse(text=y1$RShinyUIs[[10]]$control))
-        }
+         eval(parse(text=y1$RShinyUIs[[10]]$control))
+       }
       )}
+    }
   })
 
   output$show_search <- reactive({ ifelse(input$src =="search",TRUE, FALSE) })
@@ -165,11 +172,17 @@ server <- function(input, output, session) {
   output$search_for <- renderUI({
     if (input$src =="search") {
     tagList(
-    textInput("filename", label="File name:", value = "*.yml"
-              , placeholder = "Pattern for searching file names"),
+    textInput("file_ext", label="File Extension:", value = "yml"
+                , placeholder = "sas,r,py"),
+    textInput("filename", label="File name:", value = ""
+              , placeholder = "app,test,etc."),
     textInput("stext", label="Key word: ", value = ""
-              , placeholder = "key words in files")
-    )
+              , placeholder = "key words in files"),
+    textInput("size", label="File Size: ", value = ""
+              , placeholder = "100..800,>1000"),
+    textInput("path", label="Path: ", value = ""
+              , placeholder = "/foo/bar/quz")
+        )
     }
   })
 
@@ -179,30 +192,43 @@ server <- function(input, output, session) {
     # formulaText()
     # getURI(d())
     # getURLContent(d())
+
+    f_tmp <- gsub('\r','', fns[input$file,'html_url'], perl = TRUE)
+    f1 <- ifelse(input$src=="loc",f_tmp, URLencode(as.character(f_tmp)))
     # convert /x/y/a_b_sas.yml to /x/y/a_b.sas
-    f1 <- gsub('_([[:alnum:]]+).([[:alnum:]]+)$','.\\1',fn())
-    if (!exists("f1")) { return('') }
-    if (is.na(f1) || is.null(f1) || length(f1) < 1 ) {
-      return('ERROR: Missing file name.')
+    # f2 <- gsub('_([[:alnum:]]+).([[:alnum:]]+)$','.\\1',fn())
+    f2 <- gsub('_([[:alnum:]]+).([[:alnum:]]+)$','.\\1',fn())
+    if (!exists("f2")) { return('') }
+    if (is.na(f2) || is.null(f2) || length(f2) < 1 ) {
+      return(paste('ERROR: Missing file name.', f2));
     }
-    if (!file.exists(f1) && !url.exists(f1)) {
-      return(paste0('ERROR: file ', f1, ' does not exist.'))
+    if (!file.exists(f2) && !phuse::url.exists(f2)) {
+      return(paste0('ERROR: file ', f2, ' does not exist.'))
     }
-    ft <- gsub('.+\\.(\\w+)$','\\1', f1)
+    ft <- gsub('.+\\.(\\w+)$','\\1', f2)
     if (length(ft) > 0 && grepl('^(zip|exe|bin)', ft, ignore.case = TRUE) ) {
-      paste(paste0("File: ", f1),"     Could not be displayed.", sep = "\n")
+      paste(paste0("File: ", f2),"     Could not be displayed.", sep = "\n")
     } else {
-      paste(paste0("File: ", f1),readChar(f1,nchars=1e6), sep = "\n")
+      f_base <- basename(f2);
+      paste(paste0("HTML File: ", f1), paste0("JSON File: ", f2)
+            , paste("-----------", f_base, "----------")
+            , readChar(f2,nchars=1e6), sep = "\n")
+      # f_json <- read_json(f2);
+      # f_txt  <- base64Decode(f_json$content);
+      # paste(paste0("HTML File: ", f1), paste0("JSON File: ", f2), f_txt, sep = "\n")
     }
   })
 
   # -------------------- 2 tabPanel: YML  -----------------------------------
   output$yml <- renderText({
     f1 <- fn()
-    if (!file.exists(f1) && !url.exists(f1)) {
+    if (!file.exists(f1) && !phuse::url.exists(f1, show = TRUE)) {
       return(paste0('ERROR: file ', f1, ' does not exist.'))
     }
-    paste(paste0("File: ", f1),readChar(f1,nchars=1e6), sep = "\n")
+    f_base <- basename(f1);
+    paste(paste0("File: ", f1)
+          , paste("-----------", f_base, "----------")
+          , readChar(f1,nchars=1e6), sep = "\n")
   })
 
   # -------------------- 3 tabPanel: Info  ----------------------------------
@@ -264,16 +290,10 @@ server <- function(input, output, session) {
 
   # -------------------- 9 tabPanel: Execute  -------------------------------
   output$execute <- renderPlot({
-    # if (!is.null(input$yml_name)) {
-    #  y2 <- input$yml_name
-    # } else if (is.null(session$clientdata$ofn)) {
-    #  f1 <- ifelse(input$src=="loc","file_path", "file_url")
-    #  y1 <- download_fns(extract_fns(read_yml(fn())))
-    #  y2 <- as.character(y1[y1$tag=="script_name",f1])
-    # } else {
-    #   y2 <- session$clientdata$ofn
-    # }
-    y2 <- gsub('_([[:alnum:]]+).([[:alnum:]]+)$','.\\1',fn())
+    # f1 <- gsub('\r','', fns[input$file,'file'], perl = TRUE)
+    # f2 <- ifelse(input$src=="loc",f1, URLencode(as.character(f1)))
+
+    y2 <- gsub('_([[:alnum:]]+).([[:alnum:]]+)$','.\\1',fn());
     # str(y2)
     commandArgs <- function() list(prg="phuse", p1=input$p1, p2=input$p2, script_name=y2)
     if ( endsWith(toupper(y2),"R")) {
@@ -281,15 +301,22 @@ server <- function(input, output, session) {
     } else {
       # show an error
       print (append("Not an R script: ",y2))
-      plotMessage("Cannot execute other than an R script.")
+      plotMessage(paste("Cannot execute other than an R script: ", y2))
     }
   })
 
   # -------------------- 10 tabPanel: Search  -------------------------------
-  in_fn <- reactive({ input$filename })
+  in_fn  <- reactive({ input$filename })
+  in_ext <- reactive({ input$file_ext })
+  in_txt <- reactive({ input$stext })
+  in_sz  <- reactive({ input$size })
+  in_dir <- reactive({ input$path })
+  in_locrep <- reactive({ input$loc_repo  })
   output$search <- renderDataTable({
-    ff <- search_github(filename=in_fn(), out_type = 'fnlist')
-    cn <- c("fn_id", "script", "file");
+    ff <- search_api(file_ext=in_ext(),filename = in_fn(),search_for=in_txt()
+                     , size=in_sz(),path=in_dir(), loc_base = in_locrep()
+                     )
+    cn <- c("fn_id", "script", "file","html_url");
     datatable(ff[,cn]);
   })
 

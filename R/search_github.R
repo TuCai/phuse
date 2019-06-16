@@ -98,28 +98,28 @@ search_github <- function(
     h <- GET(u);
     # h[["content"]];
     t <- content(h, type = "text", encoding = 'UTF-8');
-    echo_msg(prg,3.2, paste("T len =", length(t)),3);
+    echo_msg(prg,3.3, paste("T len =", length(t)),3);
     s0 <- str_extract_all(t, regex(re1,ignore_case=TRUE));
     a <- unique(s0[[1]]);
-    echo_msg(prg,3.2, paste("A len =", length(a)),3);
+    echo_msg(prg,3.4, paste("A len =", length(a)),3);
     if (length(a) < 1 && p < 2) {
       # fn4t <- paste0(work_dir,'/',ext,'_', p,'.htm');
       # echo_msg(prg,3.2, paste("write to", fn4t),3);
       # write(t, fn4t);
       s1 <- stringr::str_extract_all(t, "<p>(.+)<br>\\n(.+)</p>");
       a1 <- unique(s1[[1]]);
-      echo_msg(prg,3.2, a1,3);
+      echo_msg(prg,3.5, a1,3);
       return(data.frame("fn_id"=a1,"script"="","file"=""))
     }
     b <- str_extract_all(a, regex(re2,ignore_case=TRUE));
-    echo_msg(prg,3.2, paste("B len =", length(b)),3);
+    echo_msg(prg,3.6, paste("B len =", length(b)),3);
     if (length(b) < 1) { has_page <- FALSE; next() }
     for (i in 1:length(b)) {
       k <- length(rr) + 1; rr[k] <- '';
       for (j in 1:length(b[[i]])) {
         rr[k] <- paste0(rr[k],sub('>','',b[[i]][j]))
       }
-      echo_msg(prg,3.2, paste("K=", k,':', rr[k]),3);
+      echo_msg(prg,3.7, paste("K=", k,':', rr[k]),3);
     }
   }
 

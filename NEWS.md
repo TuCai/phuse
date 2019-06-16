@@ -1,3 +1,9 @@
+; phuse_0.1.8 (Release Date: 06/30/2019)
+# ---------------------------------------------------------------------------
+* added search_api, start_app
+* updated 02-display/app.R
+
+
 ; phuse_0.1.7 (Release Date: 12/31/2018)
 # ---------------------------------------------------------------------------
 * added is_empty, echo_msg, search_github

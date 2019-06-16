@@ -21,6 +21,7 @@
 #  09/14/2017 (htu) - added to_crt_dir = FALSE to just return dir name
 #    and Linux, Windows options
 #  11/26/2017 (htu) - changed the default folder from /Users to tempdir()
+#  06/09/2019 (htu) - checked sub_dir before adding it to the path
 #
 crt_workdir <- function(
   top_dir = NULL,
@@ -43,7 +44,11 @@ crt_workdir <- function(
       r <- paste(rtop, usr_name, sub_dir, sep = '/');
     }
   } else {
-    r <- paste(top_dir, sub_dir, sep = '/')
+    if (is.null(sub_dir)) {
+      r <- top_dir;
+    } else{
+      r <- paste(top_dir, sub_dir, sep = '/')
+    }
   }
   if (!to_crt_dir) { return(r) }
   if (!dir.exists(r) && to_crt_dir) { dir.create(r, recursive = TRUE); }

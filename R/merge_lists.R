@@ -11,7 +11,7 @@
 #' @examples
 #'   a <- "https://github.com/phuse-org/phuse-scripts/raw/master"
 #'   b <- "development/R/scripts"
-#'   c <- "Draw_Dist_R.yml"
+#'   c <- "Draw_Dist1_R.yml"
 #'   f1 <- paste(a,b,c, sep = '/')
 #'   dr <- resolve(system.file("examples", package = "phuse"), "02_display")
 #'   f2 <- paste(dr, "www", "Draw_Dist_R.yml", sep = '/')
