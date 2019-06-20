@@ -6,6 +6,7 @@
 #   10/18/2018 (htu) - started using search_github
 #   10/19/2019 (htu) - added output$show_search and output$search_for
 #   01/01/2019 (htu) - merged Bob Friedman's code into output$script_inputs
+#   06/16/2019 (htu) - added clone tab
 #
 # rm(list=ls())
 
@@ -22,6 +23,8 @@ library(DT)
 
 options(shiny.trace = TRUE)
 
+prg <- "02-Display/app.R"; echo_msg(prg,0.0,'Started', 1)
+
 # to plot a message in the main panel
 plotMessage <- function(inString){
   par(mar = c(0,0,0,0))
@@ -29,10 +32,21 @@ plotMessage <- function(inString){
   text(x = 0.34, y = 0.9, paste(inString),
        cex = 1.5, col = "black", family="serif", font=2, adj=0.5)
 }
-fns <- search_api();
+dft_rp_url <- 'https://github.com/phuse-org/phuse-scripts.git';
+
+sys_name <- Sys.info()[["sysname"]]
+work_dir <- crt_workdir();
+if (grepl("^(Darwin|Linux)", sys_name, ignore.case = TRUE)) {
+  dft_repo <- paste(work_dir, "phuse-scripts",sep='/');
+} else {
+  dft_repo <- "C:/myCodes/phuse-org/phuse-scripts";
+}
+
+fns <- search_api(loc_base = dft_repo);
 ff  <- fns[,1]; names(ff) <- fns[,2];
 sel <- ff[order(names(ff))];
-dft_repo <- "C:/myCodes/phuse-org/phuse-scripts/trunk";
+
+echo_msg(prg,1.1,paste("Default repo: ", dft_repo),1);
 
 # Define UI for random distribution app ----
 ui <- fluidPage(
@@ -52,7 +66,10 @@ ui <- fluidPage(
                  c("Local" = "loc", "Repository" = "rep", "Search" = "search")),
       textInput("loc_repo", label = "Loc Repo: ", value = dft_repo
                 , placeholder = "Local repo name"),
+      div(id="locrepo_status",class="shiny-text-output",style="display: yes;"),
       # textOutput("result"),
+      checkboxInput("clone_repo", label="Clone Repo", value = FALSE, width = NULL),
+
       div(id="yml_name",class="shiny-text-output",style="display: none;"),
       div(id="sel_fn",class="shiny-text-output",style="display: none;"),
       # textInput("yn", "YML File Name: ", verbatimTextOutput("yml_name")),
@@ -80,7 +97,8 @@ ui <- fluidPage(
                   tabPanel("Merge", tableOutput("merge")),
                   # tabPanel("Execute", verbatimTextOutput("execute"))
                   tabPanel("Execute", plotOutput("execute")),
-                  tabPanel("Search", DT::dataTableOutput("search"))
+                  tabPanel("Search", DT::dataTableOutput("search")),
+                  tabPanel("Clone", verbatimTextOutput("clone"))
       )
     )
   )
@@ -104,6 +122,9 @@ server <- function(input, output, session) {
     f3 <- ifelse(input$src=="loc",f2, URLencode(as.character(f2)))
     f3
   })
+  chk_locrepo <- reactive({
+    ifelse(dir.exists(input$loc_repo),"Exists", "Does Not exists")
+  })
 
   # -------------------- 0 Sidebar: Select Script  --------------------------
   output$selectUI <- renderUI({ selectInput("file", "Select Script:", sel) })
@@ -111,6 +132,7 @@ server <- function(input, output, session) {
   output$result <- renderText({ paste("Script File ID: ", input$file) })
   output$sel_fn <- renderText({ paste(fns[input$file,"file"]) })
   output$yml_name <- renderText({ as.character(fn()) })
+  output$locrepo_status <- renderText({ as.character(chk_locrepo()) })
   output$show_script_ui <- reactive({
     # Show Shiny inputs if available, react if input file changes therefore access it
     testForShinyUI <- FALSE
@@ -318,6 +340,22 @@ server <- function(input, output, session) {
                      )
     cn <- c("fn_id", "script", "file","html_url");
     datatable(ff[,cn]);
+  })
+
+  # -------------------- 11 tabPanel: Clone  -------------------------------
+  output$clone <- renderPrint({
+    if (input$clone_repo) {
+      if (dir.exists(dft_repo)) {
+        paste("Default repo", dft_repo, "exists.")
+      } else {
+       clone_github(repo_url = dft_rp_url, repo_dir = in_locrep())
+      }
+    } else {
+      'Did not click "Clone Repo".'
+    }
+#    observe({
+#      updateTextInput(session,"clone_repo",  value = FALSE);
+#    })
   })
 
 }

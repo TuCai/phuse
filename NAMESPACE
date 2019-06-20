@@ -3,6 +3,7 @@
 export(build_inputs)
 export(build_script_df)
 export(chk_workdir)
+export(clone_github)
 export(create_dir)
 export(crt_workdir)
 export(cvt_class2df)

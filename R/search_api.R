@@ -10,7 +10,7 @@
 #' @param rep_base a URL for repository base folder; default to
 #'   "https://github.com/phuse-org/phuse-scripts/raw/master"
 #' @param loc_base a URL for repository base folder; default to
-#'   "C:/myCodes/phuse-org/phuse-scripts/trunk"
+#'   "C:/myCodes/phuse-org/phuse-scripts"
 #' @param filename file names to be searched; default to null
 #' @param search_for text or key word to be searched in the files; defualt to null.
 #' @param size file size; default to null
@@ -31,6 +31,8 @@
 #  06/07/2019 (htu) - used GitHub API to search
 #    https://api.github.com/search/code?q=extension:sas+repo:phuse-org/phuse-scripts
 #  06/09/2019 (htu) - used is_empty function
+#  06/16/2019 (htu) - changed loc_base = "C:/myCodes/phuse-org/phuse-scripts/trunk"
+#                     to loc_base = "C:/myCodes/phuse-org/phuse-scripts"
 #
 # curl https://github.com/phuse-org/phuse-scripts/search?q=filename:*.yml -I -H "Accept: application/json"
 # u1 <- 'https://api.github.com/search/code?q=repo:phuse-org/phuse-scripts+extension:yml&per_page=500'
@@ -44,7 +46,7 @@ search_api <- function(
   , rep_url  = 'https://github.com/phuse-org/phuse-scripts'
   , rep_dir  = 'tree/master'
   , rep_base = "https://raw.githubusercontent.com/phuse-org/phuse-scripts/master"
-  , loc_base = "C:/myCodes/phuse-org/phuse-scripts/trunk"
+  , loc_base = "C:/myCodes/phuse-org/phuse-scripts"
   , filename = NULL
   , search_for = NULL
   , size = NULL
@@ -60,7 +62,7 @@ search_api <- function(
   # 1. check inputs
   msg <- "check parameters..."; echo_msg(prg,1.0,msg,1);
 
-  fn_idx <- paste(loc_base, "yml_file_list.txt");
+  fn_idx <- paste(loc_base, "yml_file_list.txt", sep = "/");
   if (file.exists(fn_idx)) {
     msg <- paste(fn_idx, "exists."); echo_msg(prg,1.2,msg,1);
     f_inf <- file.info(fn_idx);
@@ -139,7 +141,7 @@ search_api <- function(
     r$file_url[i]  <- t$items[4]$url[i];
     r$git_url[i]   <- t$items[5]$git_url[i];
     r$html_url[i]  <- t$items[6]$html_url[i];
-    r$file_path[i] <- paste(loc_base, t$items[2]$path[i], sep="/");
+    r$file_path[i] <- paste(loc_base,t$items[2]$path[i], sep="/");
     r$file_link[i] <- f2;
     r$raw_url[i]   <- paste(rep_base, t$items[2]$path[i], sep="/");
   }

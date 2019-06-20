@@ -43,6 +43,12 @@ start_app <- function (app_name = NULL, n = 2, pkg = "phuse"
                         , msg_lvl = NULL
                        , loc = 'local'
 ) {
+  if (is.null(msg_lvl)) {
+    Sys.setenv("g_lvl"=0, "d_lvl"=0)
+  } else {
+    Sys.setenv("g_lvl"=msg_lvl, "d_lvl"=msg_lvl)
+  }
+
   prg <- "start_app"; echo_msg(prg,0.0,'Started', 1)
 #  msg <- paste("Inputs: app_name=",app_name,",n=",n, ",pkg=", pkg
 #               , ",pt=",pt,",lb=", lb,",ht=", ht,",dm=", dm,"
@@ -50,17 +56,13 @@ start_app <- function (app_name = NULL, n = 2, pkg = "phuse"
 #  echo_msg(prg,0.1,msg,1);
 
   echo_msg(prg,1.0,'Check parameters...', 1)
-  if (is.null(msg_lvl)) {
-    Sys.setenv("g_lvl"=0, "d_lvl"=0)
-  } else {
-    Sys.setenv("g_lvl"=msg_lvl, "d_lvl"=msg_lvl)
-  }
+
   if (phuse::is_empty(app_name)) {
     if (n < 1) {
       echo_msg(prg,1.1,"Missing app_name and app number: returned.",1);
     } else {
       echo_msg(prg,1.1,"Starting phuse...",1);
-      start_phuse(n);
+      start_phuse(n = n, msg_lvl = msg_lvl);
     }
     return();
   }

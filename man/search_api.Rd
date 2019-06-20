@@ -10,8 +10,8 @@ search_api(file_ext = "yml",
   rep_url = "https://github.com/phuse-org/phuse-scripts",
   rep_dir = "tree/master",
   rep_base = "https://raw.githubusercontent.com/phuse-org/phuse-scripts/master",
-  loc_base = "C:/myCodes/phuse-org/phuse-scripts/trunk",
-  filename = NULL, search_for = NULL, size = NULL, path = NULL)
+  loc_base = "C:/myCodes/phuse-org/phuse-scripts", filename = NULL,
+  search_for = NULL, size = NULL, path = NULL)
 }
 \arguments{
 \item{file_ext}{file extension; default to 'yml'}
@@ -29,7 +29,7 @@ search_api(file_ext = "yml",
 "https://github.com/phuse-org/phuse-scripts/raw/master"}
 
 \item{loc_base}{a URL for repository base folder; default to
-"C:/myCodes/phuse-org/phuse-scripts/trunk"}
+"C:/myCodes/phuse-org/phuse-scripts"}
 
 \item{filename}{file names to be searched; default to null}
 

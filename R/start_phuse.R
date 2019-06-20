@@ -37,6 +37,8 @@ start_phuse <- function (n = 2, pkg = "phuse"
                         , dm =  "normal"
                         , msg_lvl = NULL
 ) {
+  prg <- "start_phuse"; echo_msg(prg,0.0,'Started', 1)
+
   if (is.null(msg_lvl)) {
     Sys.setenv("g_lvl"=0, "d_lvl"=0)
   } else {
@@ -45,9 +47,16 @@ start_phuse <- function (n = 2, pkg = "phuse"
   apps    <- c("01_html","02_display","03_showenv","04_merge","05_d3");
   example <- apps[n];
   examplesDir <- system.file("examples", package = pkg )
+
+  echo_msg(prg,0.1, paste("Example dir =", examplesDir), 1)
+
   # dir <- shiny:::resolve(examplesDir, example)
   dir <- resolve(examplesDir, example)
+  echo_msg(prg,0.2, paste("Resolved dir =", dir), 1)
+
+
   if (is.null(dir)) {
+    echo_msg(prg,1.1,paste('could not find a dir for ',example), 1)
     if (is.na(example)) {
       errFun <- message
       errMsg <- ""
@@ -58,6 +67,7 @@ start_phuse <- function (n = 2, pkg = "phuse"
     errFun(errMsg, "Valid examples are \""
            , paste(list.files(examplesDir), collapse = "\", \""), "\"")
   } else {
+    echo_msg(prg,1.2,paste('Start app from ',dir), 1)
     shiny::runApp(dir
                   , port = pt, host = ht, launch.browser = lb, display.mode = dm)
   }

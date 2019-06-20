@@ -1,8 +1,7 @@
 ; phuse_0.1.8 (Release Date: 06/30/2019)
 # ---------------------------------------------------------------------------
-* added search_api, start_app
+* added search_api, start_app, clone_github
 * updated 02-display/app.R
-
 
 ; phuse_0.1.7 (Release Date: 12/31/2018)
 # ---------------------------------------------------------------------------
@@ -51,3 +50,10 @@
 * Added create_dir, download_script, init_cfg and test_init
 * Added read_yml, resolve and download_script_files
 * 1st time to build the package
+
+; Steps to publish package to CRAN 
+# ---------------------------------------------------------------------------
+cd /Users/htu/Desktop/myGithub/pkgs
+R CMD build phuse/trunk
+R CMD check --as-cran
+
