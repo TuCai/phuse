@@ -44,9 +44,10 @@ start_phuse <- function (n = 2, pkg = "phuse"
   } else {
     Sys.setenv("g_lvl"=msg_lvl, "d_lvl"=msg_lvl)
   }
-  apps    <- c("01_html","02_display","03_showenv","04_merge","05_d3");
-  example <- apps[n];
   examplesDir <- system.file("examples", package = pkg )
+  # apps    <- c("01_html","02_display","03_showenv","04_merge","05_d3");
+  apps    <- list.files(examplesDir);
+  example <- apps[n];
 
   echo_msg(prg,0.1, paste("Example dir =", examplesDir), 1)
 
