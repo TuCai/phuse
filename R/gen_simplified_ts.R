@@ -6,13 +6,14 @@
 #' @param tsval is Parameter Value(TSVAL); defaults to current date in format
 #'   of "YYYY-MM-DD"
 #' @param tsvalnf is Parameter Null Flavor(TSVALNF); default to blank
+#' @param ofn is output file name
 #' @importFrom SASxport write.xport
-#' @importFrom Hmisc  label
+#' @importFrom SASxport label
 #' @export
 #' @examples
 #'\dontrun{
 #'   library(phuse)
-#'   gen_simplified_ts()
+#'   fn <- gen_simplified_ts();
 #'}
 #' @author Hanming Tu
 #' @name gen_simplified_ts
@@ -31,19 +32,20 @@ gen_simplified_ts <- function (
   , ofn = "ts.xpt"
 ) {
   prg <- "gen_simplified_ts"; echo_msg(prg,0.0,'Started', 1)
+  label <- SASxport::label;
 
   echo_msg(prg,1.0,'Check parameters...', 1)
   if (is.null(studyid)) {
     echo_msg(prg,1.1,'ERR: No STUDYID is provided.', 1);
     return;
   }
-  if (is_empty(tsval)) {
-    tsval <- strftime(as.Date(tsval),"%Y-%m-%d");
+  if (is_empty(tsval) || tsval == 'YYYY-MM-DD') {
+    tsval <- strftime(as.Date(Sys.time()),"%Y-%m-%d");
   }
 
   echo_msg(prg,2.0,'Form TS data frame...', 1)
   ##Create data file##
-  abc<-data.frame(STUDYID=studyid,
+  abc <- data.frame(STUDYID=studyid,
                   TSPARMCD=tsparmcd,
                   TSVAL=tsval,
                   TSVALNF=tsvalnf
@@ -63,6 +65,8 @@ gen_simplified_ts <- function (
   out_fn    <- paste(tmp_wkdir,ofn, sep = '/')
   echo_msg(prg,3.1,paste('  To ', out_fn), 1)
 
-  write.xport (abc, file=out_fn)
+  write.xport (abc, file=out_fn);
+
+  return(out_fn);
 }
 

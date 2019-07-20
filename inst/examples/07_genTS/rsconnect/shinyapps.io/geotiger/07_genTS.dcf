@@ -1,0 +1,12 @@
+name: 07_genTS
+title: 07_genTS
+username:
+account: geotiger
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 1030119
+bundleId: 2234623
+url: https://geotiger.shinyapps.io/07_genTS/
+when: 1563223491.61667
+asMultiple: FALSE
+asStatic: FALSE
