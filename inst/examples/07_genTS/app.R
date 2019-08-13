@@ -18,13 +18,14 @@ header <- dashboardHeader(
 sidebar <- dashboardSidebar(
   sidebarMenu(
     # Setting id makes input$tabs give the tabName of currently-selected tab
-    id = "tabs",
+    id = "tab1",
     menuItem("Simplified TS", icon = icon("cog"),
-             menuSubItem("Clinical Study", tabName = "subitem1"),
-             menuSubItem("Non-clinical Study", tabName = "subitem2")
+      menuSubItem("Creation Guide", href = 'Simplified_TS_Creation_Guide_v2.pdf', newtab = FALSE),
+      menuSubItem("About phuse Package", href = 'install_phuse_pkg.png', newtab = TRUE)
     )
   )
 )
+
 
 tabP1a <- radioButtons("studytp", " Study Type: "
         , c("Clinical" = "clin", "Non-clinical" = "Non")
@@ -55,14 +56,17 @@ ui <- dashboardPage(
       # , tabPanel("View", DT::dataTableOutput("tabP2"))
       , tabPanel("View", uiOutput("tabP2"))
     ))
-   #, tabItems(
-  #    tabItem("subitem1",
-  #            "Sub-item 1 tab content"
-  #    ),
-  #    tabItem("subitem2",
+   # , tabItems(
+    , fluidRow(
+      tabItem("tab1", hr()
+        , menuItem('About phuse Pkg',icon=icon('code'),href='install_phuse_pkg.png')
+        , menuItem('Creation Guide',icon=icon('code'),href='Simplified_TS_Creation_Guide_v2.pdf')
+        , menuItem('Source Code',icon=icon('code'),href='https://github.com/TuCai/phuse/blob/master/inst/examples/07_genTS/app.R')
+      )
+  #    , tabItem("subitem2",
   #            "Sub-item 2 tab content"
   #    )
-  #  )
+    )
   , tags$footer("PhUSE Code Sharing (Repository) Project"
     , align = "center"
     , style = "position:absolute;
@@ -83,6 +87,7 @@ server <- function(input, output, session) {
       tsval <- strftime(as.Date(Sys.time()),"%Y-%m-%d");
     } else {
       tsval <- input$tsval
+      # tsval <- strftime(as.Date(input$tsval),"%Y-%m-%d");
     }
 
     ts <-data.frame(STUDYID=input$studyid
@@ -92,7 +97,7 @@ server <- function(input, output, session) {
       # , stringAsFactors=FALSE
     );
 
-    label (ts)       <- 'Trial Summary';
+    label (ts)           <- 'Trial Summary';
     label (ts$STUDYID)   <- 'Study Identifier';
     label (ts$TSPARMCD)  <- 'Trial Summary Parameter Short Name';
     label (ts$TSVAL)     <- 'Parameter Value';
@@ -113,8 +118,13 @@ server <- function(input, output, session) {
       , div(id = "form"
       , textInput("studyid", " STUDYID: ", "Study Identifier")
       , textInput("tsparmcd", " TSPARMCD: ", ts_val())
-      , textInput("tsval", " TSVAL: ","YYYY-MM-DD")
-      , textInput("tsvalnf", " TSVALNF: ")
+      , dateInput("tsval", label = " TSVAL: ", value = "YYYY-MM-DD")
+      # , textInput("tsval", " TSVAL: ","YYYY-MM-DD")
+      # , textInput("tsvalnf", " TSVALNF: ")
+      , selectInput("tsvalnf", label = " TSVALNF: ",
+                  choices = list("Blank" = "", "Missing" = "NA"),
+                  selected = "")
+
       # , actionButton("submit", " Submit ", class = "btn-primary")
       )
       , downloadButton('downloadData', 'Download')
