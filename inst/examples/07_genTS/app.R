@@ -51,7 +51,6 @@ ui <- dashboardPage(
     )
     , fluidRow(tabsetPanel(id='tabs'
       , tabPanel("Create", uiOutput("tabP1"))
-      # , tabPanel("View", DT::dataTableOutput("tabP2"))
       , tabPanel("View", uiOutput("tabP2"))
     ))
 
@@ -60,6 +59,7 @@ ui <- dashboardPage(
       tabItem("tab1", hr()
               , menuItem('About phuse Pkg',icon=icon('code'),href='install_phuse_pkg.png')
               , menuItem('Creation Guide',icon=icon('code'),href='Simplified_TS_Creation_Guide_v2.pdf')
+              , menuItem('Utility Requirements',icon=icon('code'),href='XPT_Utility_Requirements.xlsx')
               , menuItem('Source Code',icon=icon('code'),href='https://github.com/TuCai/phuse/blob/master/inst/examples/07_genTS/app.R')
               , hr()
       )
@@ -87,14 +87,18 @@ server <- function(input, output, session) {
       need(input$studyid != "", "Please provide Study ID.")
     )
     validate(
-      need(input$tsparmcd != "", "Study Type Parameter.")
+      need(input$tsparmcd != "", "Please provide Study Type Parameter.")
     )
     req(input$studyid)
     req(input$tsparmcd)
-    if (is_empty(input$tsval) || (is.character(input$tsval) && input$tsval == 'YYYY-MM-DD')) {
+    if ( (is.character(input$tsval) && input$tsval == 'YYYY-MM-DD')) {
       tsval <- as.character(strftime(as.Date(Sys.time()),"%Y-%m-%d"));
     } else {
-      tsval <- as.character(input$tsval)
+      if (is_empty(input$tsval)) {
+        tsval <-  as.character("")
+      } else {
+        tsval <- as.character(input$tsval)
+      }
     }
     ts <-data.frame(STUDYID=input$studyid
                 #    , DOMAIN="TS"
@@ -119,14 +123,15 @@ server <- function(input, output, session) {
             , "Nonclinical (STSTDTC)" = "STSTDTC")
             , selected = "STSTDTC")
          , dateInput("tsval", label = "Study Start Date (TSVAL)"
-             , ifelse( is_empty(input$tsvalnf), as.character(input$tsval), "")  )
+             # , ifelse( is_empty(input$tsvalnf), as.character(input$tsval), "")
+             )
          # , textInput("tsval", " TSVAL: ","YYYY-MM-DD")
          , textInput("tsvalnf", "Exception Code (TSVALNF)"
-               , ifelse( is_empty(as.character(input$tsval)) , as.character(input$tsvalnf), "")  )
-
-                   # , actionButton("submit", " Submit ", class = "btn-primary")
+            #   , ifelse( is_empty(as.character(input$tsval)) , as.character(input$tsvalnf), "")
+               )
              )
-             , downloadButton('downloadData', 'Download')
+         , hr()
+         , downloadButton('downloadData', 'Download')
     )
 
   })
