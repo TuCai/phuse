@@ -27,6 +27,10 @@ sidebar <- dashboardSidebar(
 )
 
 
+tabP1a <- radioButtons("studytp", " Study Type: "
+                       , c("Clinical" = "clin", "Non-clinical" = "Non")
+                       , selected = NULL)
+
 ui <- dashboardPage(
   # dashboardHeader(),
   # dashboardSidebar(),
@@ -40,28 +44,24 @@ ui <- dashboardPage(
     , extendShinyjs(text='shinyjs.showSidebar = function(params) {
       $("body").removeClass("sidebar-collapse");
       $(window).trigger("resize"); }')
-    # , extendShinyjs(text="$('#studyid').attr('maxlength', 200)")
-    # , shinyjs::runjs("$('#studyid').attr('maxlength', 50)")
     , bsButton("showpanel", "Show/Hide sidebar",icon = icon("toggle-off"),
                type = "toggle",style = "info", value = TRUE)
     , tags$head(
       tags$style(type="text/css",
                  "label{ display: table-cell; text-align: right; vertical-align: middle; }
-         .form-group { display: table-col;}")
-    )
-    , fluidRow(tabsetPanel(id='tabs'
-      , tabPanel("Create", uiOutput("tabP1"))
-      # , tabPanel("View", DT::dataTableOutput("tabP2"))
-      , tabPanel("View", uiOutput("tabP2"))
+         .form-group { display: table-row;}")
+    ),
+    fluidRow(tabsetPanel(id='tabs'
+                         , tabPanel("Create", tabP1a, uiOutput("tabP1"))
+                         # , tabPanel("View", DT::dataTableOutput("tabP2"))
+                         , tabPanel("View", uiOutput("tabP2"))
     ))
-
     # , tabItems(
     , fluidRow(
       tabItem("tab1", hr()
               , menuItem('About phuse Pkg',icon=icon('code'),href='install_phuse_pkg.png')
               , menuItem('Creation Guide',icon=icon('code'),href='Simplified_TS_Creation_Guide_v2.pdf')
               , menuItem('Source Code',icon=icon('code'),href='https://github.com/TuCai/phuse/blob/master/inst/examples/07_genTS/app.R')
-              , hr()
       )
       #    , tabItem("subitem2",
       #            "Sub-item 2 tab content"
@@ -69,10 +69,10 @@ ui <- dashboardPage(
     )
     , tags$footer("PhUSE Code Sharing (Repository) Project"
                   , align = "center"
-                  , style = "position:dynamic;
+                  , style = "position:absolute;
               bottom:0;
               width:100%;
-              height:30px;   /* Height of the footer */
+              height:50px;   /* Height of the footer */
               color: white;
               padding: 10px;
               background-color: blue;
@@ -83,79 +83,81 @@ ui <- dashboardPage(
 
 server <- function(input, output, session) {
   ts_content <- reactive({
-    validate(
-      need(input$studyid != "", "Please provide Study ID.")
-    )
-    validate(
-      need(input$tsparmcd != "", "Study Type Parameter.")
-    )
-    req(input$studyid)
-    req(input$tsparmcd)
     if (is_empty(input$tsval) || (is.character(input$tsval) && input$tsval == 'YYYY-MM-DD')) {
-      tsval <- as.character(strftime(as.Date(Sys.time()),"%Y-%m-%d"));
+      tsval <- strftime(as.Date(Sys.time()),"%Y-%m-%d");
     } else {
-      tsval <- as.character(input$tsval)
+      tsval <- input$tsval
+      # tsval <- strftime(as.Date(input$tsval),"%Y-%m-%d");
     }
+    
     ts <-data.frame(STUDYID=input$studyid
-                #    , DOMAIN="TS"
-                #    , TSSEQ = 1
-                #    , TSGRPID = ""
+                    , DOMAIN="TS"
+                    , TSSEQ = 1
+                    , TSGRPID = ""
                     , TSPARMCD=input$tsparmcd
-                #    , TSPARM=input$tsparm
+                    , TSPARM=input$tsparm
                     , TSVAL=tsval
                     , TSVALNF=input$tsvalnf
                     # , stringAsFactors=FALSE
     );
     ts
   })
-
+  
+  #ofn <- reactive({
+  #gen_simplified_ts(input$studyid, input$tsparmcd, input$tsval, input$tsvalnf)
+  #})
+  
   # -------------------- 1 tabPanel: Create  --------------------------------
+  ts_val <- reactive({
+    ifelse(input$studytp=='clin','SSTCTC','STSTDTC')
+  })
+  ts_val2 <- reactive({
+    ifelse(input$studytp=='clin2','Study Start Date','Study Start Date')
+  })
   output$tabP1 <- renderUI({
     tabPanel("Create"
-      , div(id = "form"
-         , textInput("studyid", "Study ID (STUDYID)", "")
-         , selectInput("tsparmcd", "Study Type Parameter (TSPARMCD)"
-            , choices = list("Clinical (SSTDTC)" = "SSTDTC"
-            , "Nonclinical (STSTDTC)" = "STSTDTC")
-            , selected = "STSTDTC")
-         , dateInput("tsval", label = "Study Start Date (TSVAL)"
-             , ifelse( is_empty(input$tsvalnf), as.character(input$tsval), "")  )
-         # , textInput("tsval", " TSVAL: ","YYYY-MM-DD")
-         , textInput("tsvalnf", "Exception Code (TSVALNF)"
-               , ifelse( is_empty(as.character(input$tsval)) , as.character(input$tsvalnf), "")  )
-
+             , div(id = "form"
+                   , textInput("studyid", " STUDYID: ", "Study Identifier")
+                   , textInput("tsparmcd", " TSPARMCD: ", ts_val())
+                   , textInput("tsparm", " TSPARM: ", ts_val2())
+                   , dateInput("tsval", label = " TSVAL: ", value = "YYYY-MM-DD")
+                   # , textInput("tsval", " TSVAL: ","YYYY-MM-DD")
+                   # , textInput("tsvalnf", " TSVALNF: ")
+                   , selectInput("tsvalnf", label = " TSVALNF: ",
+                                 choices = list("Blank" = "", "Missing" = "NA"),
+                                 selected = "")
+                   
                    # , actionButton("submit", " Submit ", class = "btn-primary")
              )
              , downloadButton('downloadData', 'Download')
     )
-
   })
-
+  
   output$downloadData <- downloadHandler(
     filename = function() { paste("ts", ".xpt",sep="") },
     content  = function(file) {
       # get dataframe with thedata
       studyData <- ts_content()
-    #  studyData=transform(studyData, TSSEQ = as.numeric(TSSEQ))
+      studyData=transform(studyData, TSSEQ = as.numeric(TSSEQ))
       # set to characters not factors
-      studyData$STUDYID   <- as.character(studyData$STUDYID)
-    #  studyData$DOMAIN    <- as.character(studyData$DOMAIN)
-    #  studyData$TSGRPID   <- as.character(studyData$TSGRPID)
-      studyData$TSPARMCD  <- as.character(studyData$TSPARMCD)
-    #  studyData$TSPARM    <- as.character(studyData$TSPARM)
-      studyData$TSVAL     <- as.character(studyData$TSVAL)
-      studyData$TSVALNF   <- as.character(studyData$TSVALNF)
+      studyData$STUDYID <- as.character(studyData$STUDYID)
+      studyData$DOMAIN <- as.character(studyData$DOMAIN)
+      studyData$TSGRPID <- as.character(studyData$TSGRPID)
+      studyData$TSPARMCD <- as.character(studyData$TSPARMCD)
+      studyData$TSPARM <- as.character(studyData$TSPARM)
+      studyData$TSVAL <- as.character(studyData$TSVAL)
+      studyData$TSVALNF <- as.character(studyData$TSVALNF)
       # Set length for character fields
-    #  SASformat(studyData$DOMAIN) <-"$2."
+      SASformat(studyData$DOMAIN) <-"$2."	
       # Label list
-    #  Hmisc::label(studyData$DOMAIN)  <- "Domain Abbreviation"
-      Hmisc::label(studyData$STUDYID) <- "Study Identifier"
-    #  Hmisc::label(studyData$TSSEQ)   <- "Sequence Number"
-    #  Hmisc::label(studyData$TSGRPID) <- "Group Identifier"
-      Hmisc::label(studyData$TSPARMCD)<- "Trial Summary Parameter Short Name"
-    #  Hmisc::label(studyData$TSPARM)  <- "Trial Summary Parameter Name"
-      Hmisc::label(studyData$TSVAL)   <- "Parameter Value"
-      Hmisc::label(studyData$TSVALNF) <- "Parameter Null FLavor"
+      Hmisc::label(studyData$DOMAIN)<- "Domain Abbreviation" 
+      Hmisc::label(studyData$STUDYID)<- "Study Identifier" 
+      Hmisc::label(studyData$TSSEQ)<-  "Sequence Number" 
+      Hmisc::label(studyData$TSGRPID)<-  "Group Identifier" 
+      Hmisc::label(studyData$TSPARMCD)<-  "Trial Summary Parameter Short Name" 
+      Hmisc::label(studyData$TSPARM)<-  "Trial Summary Parameter Name" 
+      Hmisc::label(studyData$TSVAL)<- "Parameter Value" 
+      Hmisc::label(studyData$TSVALNF)<- "Parameter Null FLavor"
       # place this dataset into a list with a name
       aList = list(studyData)
       # name it
@@ -168,29 +170,27 @@ server <- function(input, output, session) {
         file = file,
         verbose=FALSE,
         sasVer="7.00",
-        osType="R 3.5.2",
+        osType="R 3.5.2",	
         cDate=Sys.time(),
         formats=NULL,
         autogen.formats=TRUE
       )
     }
   )
-
+  
   # -------------------- 2 tabPanel: View  ----------------------------------
-  output$DT2 <- renderDataTable({
-    df <- ts_content()
-    str(df)
-    datatable(df);  # from DT package
-  })
-
   output$tabP2 <- renderUI({
     tabPanel("View"
              , DT::dataTableOutput("DT2")
-             , hr()
              , downloadButton('downloadData', 'Download')
     )
   })
-
+  
+  output$DT2 <- renderDataTable({
+    df <- ts_content()
+    datatable(df);  # from DT package
+  })
+  
   observe({
     if(input$showpanel == TRUE) {
       js$showSidebar()
