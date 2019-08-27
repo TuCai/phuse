@@ -1,15 +1,3 @@
-# Purpose: simple app to create a simplified TS domain dataset
-# Development History:
-#   MM/DD/2019 (developer) - description
-#   07/12/2019 (htu) - initial creation based on FDA guide:
-#     https://github.com/TuCai/phuse/blob/master/inst/examples/07_genTS/www/Simplified_TS_Creation_Guide_v2.pdf
-#   08/13/2019 (htu) - modified the field labels and control based on new requirements:
-#   08/16/2019 (bfriedman) - modified the download handler to use ts.xpt as
-#      download file name and change all fields to character fields
-#   08/23/2019 (htu) - merged Bob's code
-#   08/27/2019 (htu) - added JS codes to make studyid as required and TSVAL and TSVALNF mutually exclusive
-#
-
 library(shiny)
 library(shinydashboard)
 library(shinyjs)
@@ -32,14 +20,12 @@ sidebar <- dashboardSidebar(
     # Setting id makes input$tabs give the tabName of currently-selected tab
     id = "tab1",
     menuItem("Simplified TS", icon = icon("cog"),
-      menuSubItem("Creation Guide", href = 'Simplified_TS_Creation_Guide_v2.pdf', newtab = FALSE)
-    , menuSubItem("About phuse Package", href = 'install_phuse_pkg.png', newtab = TRUE)
-    , menuSubItem('Utility Requirements',href = 'XPT_Utility_Requirements.xlsx', newtab = TRUE)
-    , menuSubItem('Source Code',href='https://github.com/TuCai/phuse/blob/master/inst/examples/07_genTS/app.R', newtab = TRUE)
-
+             menuSubItem("Creation Guide", href = 'Simplified_TS_Creation_Guide_v2.pdf', newtab = FALSE),
+             menuSubItem("About phuse Package", href = 'install_phuse_pkg.png', newtab = TRUE)
     )
   )
 )
+
 
 ui <- dashboardPage(
   # dashboardHeader(),
@@ -54,6 +40,8 @@ ui <- dashboardPage(
     , extendShinyjs(text='shinyjs.showSidebar = function(params) {
       $("body").removeClass("sidebar-collapse");
       $(window).trigger("resize"); }')
+    # , extendShinyjs(text="$('#studyid').attr('maxlength', 200)")
+    # , shinyjs::runjs("$('#studyid').attr('maxlength', 50)")
     , bsButton("showpanel", "Show/Hide sidebar",icon = icon("toggle-off"),
                type = "toggle",style = "info", value = TRUE)
     , tags$head(
@@ -69,13 +57,30 @@ ui <- dashboardPage(
     # , tabItems(
     , fluidRow(
       tabItem("tab1", hr()
-        , menuItem('About phuse Pkg',icon=icon('code'),href='install_phuse_pkg.png')
-        , menuItem('Creation Guide',icon=icon('code'),href='Simplified_TS_Creation_Guide_v2.pdf')
-        , menuItem('Utility Requirements',icon=icon('code'),href='XPT_Utility_Requirements.xlsx')
-        , menuItem('Source Code',icon=icon('code'),href='https://github.com/TuCai/phuse/blob/master/inst/examples/07_genTS/app.R')
+              , menuItem('About phuse Pkg',icon=icon('code'),href='install_phuse_pkg.png')
+              , menuItem('Creation Guide',icon=icon('code'),href='Simplified_TS_Creation_Guide_v2.pdf')
+              , menuItem('Utility Requirements',icon=icon('code'),href='XPT_Utility_Requirements.xlsx')
+              , menuItem('Source Code',icon=icon('code'),href='https://github.com/TuCai/phuse/blob/master/inst/examples/07_genTS/app.R')
               , hr()
       )
     )
+#    , tags$script('
+#              $(document).on("shiny:inputchanged", function(e) {
+#                var x1 = document.getElementById("tsvalnf");
+#                var x2 = document.getElementById("tsval");
+#                if (e.name === "tsvalnf") {
+#                  alert("TSVALNF Changed - " + x1.value);
+#                  if (x1.value != "") {x2.value = "";}
+#                  alert("TSVALNF Changed 2 - " + x2.value);
+#                } else {
+#                  if (e.name === "tsval") {
+#                    alert("TSVAL Changed - " + x2.value);
+#                    if (x2.value != "") {x1.value = "";}
+#                    alert("TSVAL Changed 2 - " + x1.value);
+#                  }
+#                }
+#              });
+#            ')
     , tags$footer("PhUSE Code Sharing (Repository) Project"
                   , align = "center"
                   , style = "position:dynamic;
@@ -115,11 +120,15 @@ server <- function(input, output, session) {
 
   # -------------------- 1 tabPanel: Create  --------------------------------
   get_tsval <- reactive({
-    if (is_empty(input$tsval)) {
-      tsval <-  as.character("")
-    } else {
-      tsval <- as.character(input$tsval)
-    }
+    # if ( (is.character(input$tsval) && input$tsval == 'YYYY-MM-DD')) {
+    #  tsval <- as.character(strftime(as.Date(Sys.time()),"%Y-%m-%d"));
+    #} else {
+      if (is_empty(input$tsval)) {
+        tsval <-  as.character("")
+      } else {
+        tsval <- as.character(input$tsval)
+      }
+    #}
     tsval
   })
 
@@ -137,6 +146,7 @@ server <- function(input, output, session) {
       , hr()
       , hidden(downloadButton('downloadData', 'Download'))
     )
+
   })
 
   output$downloadData <- downloadHandler(
@@ -195,7 +205,7 @@ server <- function(input, output, session) {
     tabPanel("View"
       , DT::dataTableOutput("DT2")
       , hr()
-      , hidden(downloadButton('downloadData', 'Download'))
+      , downloadButton('downloadData', 'Download')
     )
   })
 
@@ -234,6 +244,7 @@ server <- function(input, output, session) {
       updateTextInput(session, "tsvalnf", value = "")
     }
   })
+
 }
 
 shinyApp(ui, server)
