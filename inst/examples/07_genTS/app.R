@@ -63,10 +63,24 @@ ui <- dashboardPage(
               , menuItem('Source Code',icon=icon('code'),href='https://github.com/TuCai/phuse/blob/master/inst/examples/07_genTS/app.R')
               , hr()
       )
-      #    , tabItem("subitem2",
-      #            "Sub-item 2 tab content"
-      #    )
     )
+#    , tags$script('
+#              $(document).on("shiny:inputchanged", function(e) {
+#                var x1 = document.getElementById("tsvalnf");
+#                var x2 = document.getElementById("tsval");
+#                if (e.name === "tsvalnf") {
+#                  alert("TSVALNF Changed - " + x1.value);
+#                  if (x1.value != "") {x2.value = "";}
+#                  alert("TSVALNF Changed 2 - " + x2.value);
+#                } else {
+#                  if (e.name === "tsval") {
+#                    alert("TSVAL Changed - " + x2.value);
+#                    if (x2.value != "") {x1.value = "";}
+#                    alert("TSVAL Changed 2 - " + x1.value);
+#                  }
+#                }
+#              });
+#            ')
     , tags$footer("PhUSE Code Sharing (Repository) Project"
                   , align = "center"
                   , style = "position:dynamic;
@@ -91,22 +105,13 @@ server <- function(input, output, session) {
     )
     req(input$studyid)
     req(input$tsparmcd)
-    if ( (is.character(input$tsval) && input$tsval == 'YYYY-MM-DD')) {
-      tsval <- as.character(strftime(as.Date(Sys.time()),"%Y-%m-%d"));
-    } else {
-      if (is_empty(input$tsval)) {
-        tsval <-  as.character("")
-      } else {
-        tsval <- as.character(input$tsval)
-      }
-    }
     ts <-data.frame(STUDYID=input$studyid
                 #    , DOMAIN="TS"
                 #    , TSSEQ = 1
                 #    , TSGRPID = ""
                     , TSPARMCD=input$tsparmcd
                 #    , TSPARM=input$tsparm
-                    , TSVAL=tsval
+                    , TSVAL=get_tsval()
                     , TSVALNF=input$tsvalnf
                     # , stringAsFactors=FALSE
     );
@@ -114,24 +119,32 @@ server <- function(input, output, session) {
   })
 
   # -------------------- 1 tabPanel: Create  --------------------------------
+  get_tsval <- reactive({
+    # if ( (is.character(input$tsval) && input$tsval == 'YYYY-MM-DD')) {
+    #  tsval <- as.character(strftime(as.Date(Sys.time()),"%Y-%m-%d"));
+    #} else {
+      if (is_empty(input$tsval)) {
+        tsval <-  as.character("")
+      } else {
+        tsval <- as.character(input$tsval)
+      }
+    #}
+    tsval
+  })
+
   output$tabP1 <- renderUI({
     tabPanel("Create"
       , div(id = "form"
-         , textInput("studyid", "Study ID (STUDYID)", "")
-         , selectInput("tsparmcd", "Study Type Parameter (TSPARMCD)"
+         , textInput("studyid", "Study ID (STUDYID) *" )
+         , selectInput("tsparmcd", "Study Type Parameter (TSPARMCD) *"
             , choices = list("Clinical (SSTDTC)" = "SSTDTC"
             , "Nonclinical (STSTDTC)" = "STSTDTC")
             , selected = "STSTDTC")
-         , dateInput("tsval", label = "Study Start Date (TSVAL)"
-             # , ifelse( is_empty(input$tsvalnf), as.character(input$tsval), "")
-             )
-         # , textInput("tsval", " TSVAL: ","YYYY-MM-DD")
-         , textInput("tsvalnf", "Exception Code (TSVALNF)"
-            #   , ifelse( is_empty(as.character(input$tsval)) , as.character(input$tsvalnf), "")
-               )
-             )
-         , hr()
-         , downloadButton('downloadData', 'Download')
+         , dateInput("tsval", label = "Study Start Date (TSVAL)", format = "yyyy-mm-dd" )
+         , textInput("tsvalnf", "Exception Code (TSVALNF)" )
+        )
+      , hr()
+      , hidden(downloadButton('downloadData', 'Download'))
     )
 
   })
@@ -190,9 +203,9 @@ server <- function(input, output, session) {
 
   output$tabP2 <- renderUI({
     tabPanel("View"
-             , DT::dataTableOutput("DT2")
-             , hr()
-             , downloadButton('downloadData', 'Download')
+      , DT::dataTableOutput("DT2")
+      , hr()
+      , downloadButton('downloadData', 'Download')
     )
   })
 
@@ -204,6 +217,34 @@ server <- function(input, output, session) {
       js$hideSidebar()
     }
   })
+
+  observeEvent(input$studyid, {
+    if (input$studyid == "")
+      hide("downloadData")
+    else
+      show("downloadData")
+  })
+
+  observeEvent(input$tsvalnf, {
+    if (input$tsvalnf != "") {
+      runjs('var x = document.getElementById("tsval"); x.value = "";x.disabled=true;')
+      updateDateInput(session, "tsval", value = NA )
+    } else {
+      runjs('var x = document.getElementById("tsval"); x.disabled=false;')
+      # updateTextInput(session, "tsval", label = "Study Start Date (TSVAL)")
+    }
+   })
+
+  observeEvent(input$tsval, {
+    # str(input$tsval);
+    # str(length(input$tsval));
+    if (length(input$tsval) == 1) {
+      # runjs('var x = document.getElementById("tsvalnf"); alert("TSVALNF=" + x.value);x.value = "";')
+      runjs('var x = document.getElementById("tsvalnf"); x.value = "";')
+      updateTextInput(session, "tsvalnf", value = "")
+    }
+  })
+
 }
 
 shinyApp(ui, server)
