@@ -217,11 +217,8 @@ server <- function(input, output, session) {
 
   observeEvent(input$tsvalnf, {
     if (input$tsvalnf != "") {
-      runjs('var x = document.getElementById("tsval"); x.value = "";x.disabled=true;')
+      # runjs('var x = document.getElementById("tsval"); x.value = "";x.disabled=true;')
       updateDateInput(session, "tsval", value = NA )
-    } else {
-      runjs('var x = document.getElementById("tsval"); x.disabled=false;')
-      # updateTextInput(session, "tsval", label = "Study Start Date (TSVAL)")
     }
    })
 
@@ -230,7 +227,7 @@ server <- function(input, output, session) {
     # str(length(input$tsval));
     if (length(input$tsval) == 1) {
       # runjs('var x = document.getElementById("tsvalnf"); alert("TSVALNF=" + x.value);x.value = "";')
-      runjs('var x = document.getElementById("tsvalnf"); x.value = "";')
+      # runjs('var x = document.getElementById("tsvalnf"); x.value = "";')
       updateTextInput(session, "tsvalnf", value = "")
     }
   })

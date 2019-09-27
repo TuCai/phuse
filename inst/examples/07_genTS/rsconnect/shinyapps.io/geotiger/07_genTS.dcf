@@ -5,8 +5,8 @@ account: geotiger
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 1030119
-bundleId: 2360132
+bundleId: 2360357
 url: https://geotiger.shinyapps.io/07_genTS/
-when: 1566916735.14571
+when: 1566920504.49694
 asMultiple: FALSE
 asStatic: FALSE
