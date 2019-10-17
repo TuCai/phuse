@@ -7,7 +7,7 @@ output: html_document
 
 ## About this package
 
-This is my very first R package. The purpose of this package is to provide a framework of PHUSE script web application based on [script metadata for sharing](https://www.phuse.eu/documents//working-groups/deliverables/PHUSE-script-metadata-for-sharing-whitepaper-19810.pdf). 
+This is my very first R package. The purpose of this package is to provide a framework of PHUSE script web application based on [script metadata for sharing](https://www.phuse.eu/documents//working-groups/deliverables/PHUSE-script-metadata-for-sharing-whitepaper-19810.pdf). See the paper [Defining Script Metadata for Sharing: Using phuse R package as an example](https://www.phusewiki.org/docs/Conference%202017%20CT%20papers/CT12.pdf) and [presenation] (https://www.phusewiki.org/docs/Conference%202017%20CT%20Presentations/CT12.pdf) about this framework. Here is a list of [people](https://www.phusewiki.org/wiki/index.php?title=Script_Metadata_for_Sharing) who work on this project.  
 
 It has the following tabs in the framework: 
 
@@ -52,24 +52,9 @@ start_app()
 start_app(n=7)
 ```
 
-
-
-## R Markdown
-
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
-
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
-
-```{r cars}
-summary(cars)
-```
-
-## Including Plots
-
-You can also embed plots, for example:
-
-```{r pressure, echo=FALSE}
-plot(pressure)
-```
-
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+It will try to conduct the following tasks:
+* Clone the phuse-scripts repository to your local computer if you are the first time to start the interface or the local repository is old
+* Grep all the YML files from the local repository
+* Build a data frame to hold the information for all YML files
+* Write the data frame to a local file
+* Populate the “Select Script” dropdown list
