@@ -1,3 +1,9 @@
+; phuse_0.2.0 (Release Date: 10/17/2019)
+# ---------------------------------------------------------------------------
+* added README.md for this package
+* updated crt_workdir, search_api and start_app
+* updated gen_simplified_ts and merge_lists
+
 ; phuse_0.1.9 (Release Date: 10/15/2019)
 # ---------------------------------------------------------------------------
 * added 07_genTS
@@ -59,5 +65,7 @@
 # ---------------------------------------------------------------------------
 cd /Users/htu/Desktop/myGithub/pkgs
 R CMD build phuse/trunk
-R CMD check --as-cran
+R CMD check --as-cran <xxx.gz>
+goto: https://cran.r-project.org/submit.html
+
 
