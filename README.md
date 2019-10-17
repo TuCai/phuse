@@ -7,7 +7,7 @@ output: html_document
 
 ## About this package
 
-This is my very first R package. The purpose of this package is to provide a framework of PHUSE script web application based on [script metadata for sharing](https://www.phuse.eu/documents//working-groups/deliverables/PHUSE-script-metadata-for-sharing-whitepaper-19810.pdf). See the paper [Defining Script Metadata for Sharing: Using phuse R package as an example](https://www.phusewiki.org/docs/Conference%202017%20CT%20papers/CT12.pdf) and [presenation] (https://www.phusewiki.org/docs/Conference%202017%20CT%20Presentations/CT12.pdf) about this framework. Here is a list of [people](https://www.phusewiki.org/wiki/index.php?title=Script_Metadata_for_Sharing) who work on this project.  
+This is my very first R package. The purpose of this package is to provide a framework of PHUSE script web application based on [script metadata for sharing](https://www.phuse.eu/documents//working-groups/deliverables/PHUSE-script-metadata-for-sharing-whitepaper-19810.pdf). See the paper [Defining Script Metadata for Sharing: Using phuse R package as an example](https://www.phusewiki.org/docs/Conference%202017%20CT%20papers/CT12.pdf) and [presenation](https://www.phusewiki.org/docs/Conference%202017%20CT%20Presentations/CT12.pdf) about this framework. Here is a list of [people](https://www.phusewiki.org/wiki/index.php?title=Script_Metadata_for_Sharing) who work on this project.  
 
 It has the following tabs in the framework: 
 
