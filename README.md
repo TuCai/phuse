@@ -11,21 +11,21 @@ This is my very first R package. The purpose of this package is to provide a fra
 
 It has the following tabs in the framework: 
 
-* Script: 
+* **Script**: 
   displays the script if it is readable.
-* YML: 
+* **YML**: 
   displays the content of YML
-* Info: 
+* **Info**: 
   displays the information about the YML
-* Metadata: 
+* **Metadata**: 
   shows the metadata of the script in table format
-* Verify: 
+* **Verify**: 
   verifies the existence of the files defined in YML
-* Download: 
+* **Download**: 
   downloads the script to local computer
-* Merge: 
+* **Merge**: 
   merges online and local metadata files
-* Execute: executes the script if it is executable. 
+* **Execute**: executes the script if it is executable. 
 
 ## How to install 
 
