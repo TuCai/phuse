@@ -58,3 +58,9 @@ It will try to conduct the following tasks:
 * Build a data frame to hold the information for all YML files
 * Write the data frame to the local file if there are new YML files added
 * Populate the “Select Script” dropdown list
+
+## Create Simplified TS domain file
+
+After you install phuse package, you can start it as start_app(n=7) or access the published app at [Creating TS Domain](https://geotiger.shinyapps.io/07_genTS/). 
+
+To view source code, you can go to the [app 07 source](https://github.com/TuCai/phuse/blob/master/inst/examples/07_genTS/app.R). 
