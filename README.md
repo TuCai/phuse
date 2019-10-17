@@ -48,13 +48,13 @@ install_github(”TuCai/phuse")
 
 ```
 library(phuse)
-start_app()
-start_app(n=7)
+start_app()               # start with default settings
+start_app(msg_lvl = 3)    # start and display detailed message at level 3
+start_app(n=7)            # to start an application
 ```
 
 It will try to conduct the following tasks:
-* Clone the phuse-scripts repository to your local computer if you are the first time to start the interface or the local repository is old
-* Grep all the YML files from the local repository
+* Build a YML file index and stored the file to your local computer if you are the first time to start the interface or the local YML file is too old (older than 7 days)
 * Build a data frame to hold the information for all YML files
-* Write the data frame to a local file
+* Write the data frame to the local file if there are new YML files added
 * Populate the “Select Script” dropdown list

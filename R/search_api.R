@@ -33,6 +33,7 @@
 #  06/09/2019 (htu) - used is_empty function
 #  06/16/2019 (htu) - changed loc_base = "C:/myCodes/phuse-org/phuse-scripts/trunk"
 #                     to loc_base = "C:/myCodes/phuse-org/phuse-scripts"
+#  10/17/2019 (htu) - used crt_workdir to consider loc_base not exsit case
 #
 # curl https://github.com/phuse-org/phuse-scripts/search?q=filename:*.yml -I -H "Accept: application/json"
 # u1 <- 'https://api.github.com/search/code?q=repo:phuse-org/phuse-scripts+extension:yml&per_page=500'
@@ -61,6 +62,10 @@ search_api <- function(
 
   # 1. check inputs
   msg <- "check parameters..."; echo_msg(prg,1.0,msg,1);
+
+  if (! dir.exists(loc_base)) {
+    loc_base <- crt_workdir(top_dir = NULL, sub_dir = NULL);
+  }
 
   fn_idx <- paste(loc_base, "yml_file_list.txt", sep = "/");
   if (file.exists(fn_idx)) {

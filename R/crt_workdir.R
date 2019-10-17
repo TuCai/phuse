@@ -22,6 +22,7 @@
 #    and Linux, Windows options
 #  11/26/2017 (htu) - changed the default folder from /Users to tempdir()
 #  06/09/2019 (htu) - checked sub_dir before adding it to the path
+#  10/17/2019 (htu) - added usub_dir to consider null sub_dir case
 #
 crt_workdir <- function(
   top_dir = NULL,
@@ -32,16 +33,21 @@ crt_workdir <- function(
     sys_name <- Sys.info()[["sysname"]]
     usr_name <- Sys.info()[["user"]]
     rtop <- tempdir()
+    if (is.null(sub_dir)) {
+      usub_dir <- usr_name;
+    } else {
+      usub_dir <- paste(usr_name, sub_dir, sep = '/');
+    }
     if (grepl("^(htu|hanming)", usr_name, ignore.case = TRUE)) {
       if (grepl("^(Darwin|Linux)", sys_name, ignore.case = TRUE)) {
-        r <- paste('/Users', usr_name, sub_dir, sep = '/');
+        r <- paste('/Users', usub_dir, sep = '/');
       } else if (grepl("^Windows", sys_name, ignore.case = TRUE)) {
-        r <- paste('c:/tmp', usr_name, sub_dir, sep = '/');
+        r <- paste('c:/tmp', usub_dir, sep = '/');
       } else {
-        r <- paste(getwd(), usr_name, sub_dir, sep = '/');
+        r <- paste(getwd(), usub_dir, sep = '/');
       }
     } else  {
-      r <- paste(rtop, usr_name, sub_dir, sep = '/');
+      r <- paste(rtop, usub_dir, sep = '/');
     }
   } else {
     if (is.null(sub_dir)) {
