@@ -32,7 +32,9 @@ gen_simplified_ts <- function (
   , ofn = "ts.xpt"
 ) {
   prg <- "gen_simplified_ts"; echo_msg(prg,0.0,'Started', 1)
-  label <- SASxport::label;
+
+  # utils::globalVariables("label");
+  # label <- SASxport::label();
 
   echo_msg(prg,1.0,'Check parameters...', 1)
   if (is.null(studyid)) {
@@ -53,11 +55,11 @@ gen_simplified_ts <- function (
                   );
 
   ##Add data label and variable labels##
-  label (abc)       <- 'Trial Summary';
-  label (abc$STUDYID)   <- 'Study Identifier';
-  label (abc$TSPARMCD)  <- 'Trial Summary Parameter Short Name';
-  label (abc$TSVAL)     <- 'Parameter Value';
-  label (abc$TSVALNF)   <- 'Parameter Null Flavor';
+  SASxport::label (abc)       <- 'Trial Summary';
+  SASxport::label (abc$STUDYID)   <- 'Study Identifier';
+  SASxport::label (abc$TSPARMCD)  <- 'Trial Summary Parameter Short Name';
+  SASxport::label (abc$TSVAL)     <- 'Parameter Value';
+  SASxport::label (abc$TSVALNF)   <- 'Parameter Null Flavor';
 
   echo_msg(prg,3.0,'Write TS file...', 1)
   ##Write data into xpt format##
