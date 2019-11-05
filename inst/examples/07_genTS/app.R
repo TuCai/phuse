@@ -8,6 +8,7 @@
 #      download file name and change all fields to character fields
 #   08/23/2019 (htu) - merged Bob's code
 #   08/27/2019 (htu) - added JS codes to make studyid as required and TSVAL and TSVALNF mutually exclusive
+#   11/04/2019 (htu) - implemented FDA E-1 ~ E-8 and D-1
 #
 
 library(shiny)
@@ -20,6 +21,7 @@ library(rhandsontable)
 library(phuse)
 library(DT)
 library(V8)
+library(stringr)
 
 is_empty <- phuse::is_empty;
 
@@ -32,9 +34,9 @@ sidebar <- dashboardSidebar(
     # Setting id makes input$tabs give the tabName of currently-selected tab
     id = "tab1",
     menuItem("Simplified TS", icon = icon("cog"),
-      menuSubItem("Creation Guide", href = 'Simplified_TS_Creation_Guide_v2.pdf', newtab = FALSE)
+      menuSubItem("Simplified ts.xpt Creation Guide", href = 'https://www.fda.gov/industry/study-data-standards-resources/study-data-submission-cder-and-cber', newtab = FALSE)
     , menuSubItem("About phuse Package", href = 'install_phuse_pkg.png', newtab = TRUE)
-    , menuSubItem('Utility Requirements',href = 'XPT_Utility_Requirements.xlsx', newtab = TRUE)
+    # , menuSubItem('Utility Requirements',href = 'XPT_Utility_Requirements.xlsx', newtab = TRUE)
     , menuSubItem('Source Code',href='https://github.com/TuCai/phuse/blob/master/inst/examples/07_genTS/app.R', newtab = TRUE)
 
     )
@@ -65,13 +67,13 @@ ui <- dashboardPage(
       , tabPanel("Create", uiOutput("tabP1"))
       , tabPanel("View", uiOutput("tabP2"))
     ))
-
+#    , bsAlert(inputID = "alert_anchor")
     # , tabItems(
     , fluidRow(
       tabItem("tab1", hr()
         , menuItem('About phuse Pkg',icon=icon('code'),href='install_phuse_pkg.png')
-        , menuItem('Creation Guide',icon=icon('code'),href='Simplified_TS_Creation_Guide_v2.pdf')
-        , menuItem('Utility Requirements',icon=icon('code'),href='XPT_Utility_Requirements.xlsx')
+        , menuItem('Simplified ts.xpt Creation Guide',icon=icon('code'),href='https://www.fda.gov/industry/study-data-standards-resources/study-data-submission-cder-and-cber')
+    #   , menuItem('Utility Requirements',icon=icon('code'),href='XPT_Utility_Requirements.xlsx')
         , menuItem('Source Code',icon=icon('code'),href='https://github.com/TuCai/phuse/blob/master/inst/examples/07_genTS/app.R')
               , hr()
       )
@@ -127,12 +129,16 @@ server <- function(input, output, session) {
     tabPanel("Create"
       , div(id = "form"
          , textInput("studyid", "Study ID (STUDYID) *" )
+         , bsAlert("alert")
          , selectInput("tsparmcd", "Study Type Parameter (TSPARMCD) *"
             , choices = list("Clinical (SSTDTC)" = "SSTDTC"
             , "Nonclinical (STSTDTC)" = "STSTDTC")
             , selected = "STSTDTC")
-         , dateInput("tsval", label = "Study Start Date (TSVAL)", format = "yyyy-mm-dd" )
-         , textInput("tsvalnf", "Exception Code (TSVALNF)" )
+         , dateInput("tsval", value = NA, label = "Study Start Date (TSVAL)"
+             , format = "yyyy-mm-dd" )
+         , selectInput("tsvalnf", "Exception Code (TSVALNF)"
+             , choices = list("NA" = "NA", "__Blank__" = ""), selected = "")
+         # , textInput("tsvalnf", "Exception Code (TSVALNF)" )
         )
       , hr()
       , hidden(downloadButton('downloadData', 'Download'))
@@ -188,7 +194,7 @@ server <- function(input, output, session) {
   output$DT2 <- renderDataTable({
     df <- ts_content()
     str(df)
-    datatable(df);  # from DT package
+    datatable(df, options = list(dom = 't'));  # from DT package
   })
 
   output$tabP2 <- renderUI({
@@ -215,22 +221,38 @@ server <- function(input, output, session) {
       show("downloadData")
   })
 
-  observeEvent(input$tsvalnf, {
-    if (input$tsvalnf != "") {
-      # runjs('var x = document.getElementById("tsval"); x.value = "";x.disabled=true;')
-      updateDateInput(session, "tsval", value = NA )
-    }
-   })
-
-  observeEvent(input$tsval, {
-    # str(input$tsval);
-    # str(length(input$tsval));
-    if (length(input$tsval) == 1) {
-      # runjs('var x = document.getElementById("tsvalnf"); alert("TSVALNF=" + x.value);x.value = "";')
-      # runjs('var x = document.getElementById("tsvalnf"); x.value = "";')
-      updateTextInput(session, "tsvalnf", value = "")
+  # 11/04/2019: For FDA D-1 in PhUSE Utility feedback v4.0
+  observeEvent(input$studyid, {
+    if(input$studyid != "") {
+      if (str_length(input$studyid)>200) {
+        updateTextInput(session, "studyid", value = str_sub(input$studyid, end=200) )
+        createAlert(session, "alert", "StudyIDAlert", title = "StudyID Alert"
+          , content = "Study ID must not exceed 200 characters and is truncated."
+          , dismiss = TRUE, style = "warning", append = FALSE)
+        Sys.sleep(3)
+      } else {
+        closeAlert(session, "StudyIDAlert")
+      }
     }
   })
+
+  # 11/04/2019: Commented out for FDA E-1
+#  observeEvent(input$tsvalnf, {
+#    if (input$tsvalnf != "") {
+#      # runjs('var x = document.getElementById("tsval"); x.value = "";x.disabled=true;')
+#      updateDateInput(session, "tsval", value = NA )
+#    }
+#   })
+
+#  observeEvent(input$tsval, {
+#    # str(input$tsval);
+#    # str(length(input$tsval));
+#    if (length(input$tsval) == 1) {
+#      # runjs('var x = document.getElementById("tsvalnf"); alert("TSVALNF=" + x.value);x.value = "";')
+#      # runjs('var x = document.getElementById("tsvalnf"); x.value = "";')
+#      updateTextInput(session, "tsvalnf", value = "")
+#    }
+#  })
 }
 
 shinyApp(ui, server)
