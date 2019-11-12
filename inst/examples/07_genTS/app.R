@@ -147,7 +147,8 @@ server <- function(input, output, session) {
 
   output$downloadData <- downloadHandler(
     filename = function() { paste("ts", ".xpt",sep="") },
-    content  = function(file) {
+    content  = function(file = filename) {
+      str(file)
       # get dataframe with thedata
       studyData <- ts_content()
     #  studyData=transform(studyData, TSSEQ = as.numeric(TSSEQ))
@@ -202,6 +203,7 @@ server <- function(input, output, session) {
       , DT::dataTableOutput("DT2")
       , hr()
       , hidden(downloadButton('downloadData', 'Download'))
+      # , downloadButton('downloadData', 'Download')
     )
   })
 
@@ -227,7 +229,7 @@ server <- function(input, output, session) {
       if (str_length(input$studyid)>200) {
         updateTextInput(session, "studyid", value = str_sub(input$studyid, end=200) )
         createAlert(session, "alert", "StudyIDAlert", title = "StudyID Alert"
-          , content = "Study ID must not exceed 200 characters and is truncated."
+          , content = "Study ID must not exceed 200 characters and will be truncated."
           , dismiss = TRUE, style = "warning", append = FALSE)
         Sys.sleep(3)
       } else {

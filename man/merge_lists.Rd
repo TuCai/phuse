@@ -21,6 +21,7 @@ compare two lists using the first list as a base;
   exist in the first list.
 }
 \examples{
+\dontrun{
   a <- "https://github.com/phuse-org/phuse-scripts/raw/master"
   b <- "development/R/scripts"
   c <- "Draw_Dist1_R.yml"
@@ -30,6 +31,7 @@ compare two lists using the first list as a base;
   r1 <- read_yml(f1)
   r2 <- read_yml(f2)
   r3 <- merge_lists(r1, r2)
+}
 }
 \author{
 Hanming Tu
