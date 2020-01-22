@@ -1,3 +1,9 @@
+; phuse_0.2.2 (Release Date: 01/20/2020)
+* fixed the file name to PhUSE-Utility-feedback-v4.0,xlsx in 07_genTS app
+
+; phuse_0.2.1 (Release Date: 01/20/2020)
+* updated 07_genTS app
+
 ; phuse_0.2.0 (Release Date: 10/17/2019)
 # ---------------------------------------------------------------------------
 * added README.md for this package
