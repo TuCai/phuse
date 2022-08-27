@@ -4,9 +4,12 @@
 \alias{download_script_files}
 \title{Download files from a repository}
 \usage{
-download_script_files(fns, tgtDir,
+download_script_files(
+  fns,
+  tgtDir,
   baseDir = "https://github.com/phuse-org/phuse-scripts/raw/master",
-  scriptDir = "data/send/PDS/Xpt")
+  scriptDir = "data/send/PDS/Xpt"
+)
 }
 \arguments{
 \item{fns}{a list containing file names}

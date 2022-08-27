@@ -1,3 +1,7 @@
+; phuse_0.2.3 (Release Date: 08/27/2022)
+* fixed Block must contain only one @name
+* Updated for R 4.0
+
 ; phuse_0.2.2 (Release Date: 01/20/2020)
 * fixed the file name to PhUSE-Utility-feedback-v4.0,xlsx in 07_genTS app
 

@@ -4,9 +4,12 @@
 \alias{clone_github}
 \title{Clone a GitHub repositoru}
 \usage{
-
-  clone_github(repo_url = "https://github.com/phuse-org/phuse-scripts.git",
-  repo_dir = NULL, repo_name = NULL, upd_opt = NULL)
+clone_github(
+  repo_url = "https://github.com/phuse-org/phuse-scripts.git",
+  repo_dir = NULL,
+  repo_name = NULL,
+  upd_opt = NULL
+)
 }
 \arguments{
 \item{repo_url}{a URL for a remote repository and default to

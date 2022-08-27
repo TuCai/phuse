@@ -4,8 +4,10 @@
 \alias{url.exists}
 \title{Check URL based on httr package}
 \usage{
-url.exists(url = "https://github.com/phuse-org/phuse-scripts.git",
-  show = FALSE)
+url.exists(
+  url = "https://github.com/phuse-org/phuse-scripts.git",
+  show = FALSE
+)
 }
 \arguments{
 \item{url}{a URL for a remote repository and default to

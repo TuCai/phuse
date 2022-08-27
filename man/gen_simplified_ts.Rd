@@ -4,9 +4,13 @@
 \alias{gen_simplified_ts}
 \title{Generate Simplified TS domain xpt file}
 \usage{
-gen_simplified_ts(studyid, tsparmcd = "SSTDTC",
-  tsval = format(Sys.time(), "\%Y-\%m-\%d"), tsvalnf = " ",
-  ofn = "ts.xpt")
+gen_simplified_ts(
+  studyid,
+  tsparmcd = "SSTDTC",
+  tsval = format(Sys.time(), "\%Y-\%m-\%d"),
+  tsvalnf = " ",
+  ofn = "ts.xpt"
+)
 }
 \arguments{
 \item{studyid}{is Study Identifier(STUDYID); required.}

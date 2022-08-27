@@ -4,10 +4,14 @@
 \alias{run_example}
 \title{Run example}
 \usage{
-run_example(example = NA, pkg = "phuse", port = NULL,
+run_example(
+  example = NA,
+  pkg = "phuse",
+  port = NULL,
   launch.browser = getOption("shiny.launch.browser", interactive()),
-  host = getOption("shiny.host", "127.0.0.1"), display.mode = c("auto",
-  "normal", "showcase"))
+  host = getOption("shiny.host", "127.0.0.1"),
+  display.mode = c("auto", "normal", "showcase")
+)
 }
 \arguments{
 \item{example}{Example name}

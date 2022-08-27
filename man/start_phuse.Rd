@@ -4,10 +4,15 @@
 \alias{start_phuse}
 \title{Start Phuse Web Application}
 \usage{
-start_phuse(n = 2, pkg = "phuse", pt = NULL,
+start_phuse(
+  n = 2,
+  pkg = "phuse",
+  pt = NULL,
   lb = getOption("shiny.launch.browser", interactive()),
-  ht = getOption("shiny.host", "127.0.0.1"), dm = "normal",
-  msg_lvl = NULL)
+  ht = getOption("shiny.host", "127.0.0.1"),
+  dm = "normal",
+  msg_lvl = NULL
+)
 }
 \arguments{
 \item{n}{Example number}

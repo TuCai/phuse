@@ -4,8 +4,11 @@
 \alias{download_fns}
 \title{Download files from a repository}
 \usage{
-download_fns(df, tgtDir = NULL,
-  baseDir = "https://github.com/phuse-org/phuse-scripts/raw/master")
+download_fns(
+  df,
+  tgtDir = NULL,
+  baseDir = "https://github.com/phuse-org/phuse-scripts/raw/master"
+)
 }
 \arguments{
 \item{df}{a data frame containing file names produced from extract_fns}

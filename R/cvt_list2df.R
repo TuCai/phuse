@@ -3,7 +3,6 @@
 #'   variable, level, type, value
 #' @param a a list returned by read_yml or any list
 #' @return data frame
-#' @name cvt_list2df
 #' @importFrom stats setNames
 #' @export
 #' @examples

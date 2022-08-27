@@ -4,14 +4,19 @@
 \alias{search_api}
 \title{Search GitHub and build a script index data frame}
 \usage{
-search_api(file_ext = "yml",
+search_api(
+  file_ext = "yml",
   gh_api = "https://api.github.com/search/code",
   rp_name = "phuse-org/phuse-scripts",
   rep_url = "https://github.com/phuse-org/phuse-scripts",
   rep_dir = "tree/master",
   rep_base = "https://raw.githubusercontent.com/phuse-org/phuse-scripts/master",
-  loc_base = "C:/myCodes/phuse-org/phuse-scripts", filename = NULL,
-  search_for = NULL, size = NULL, path = NULL)
+  loc_base = "C:/myCodes/phuse-org/phuse-scripts",
+  filename = NULL,
+  search_for = NULL,
+  size = NULL,
+  path = NULL
+)
 }
 \arguments{
 \item{file_ext}{file extension; default to 'yml'}

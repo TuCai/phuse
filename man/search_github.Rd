@@ -4,12 +4,17 @@
 \alias{search_github}
 \title{Search GitHub and build a script index data frame}
 \usage{
-search_github(filename = "*.yml",
+search_github(
+  filename = "*.yml",
   rep_url = "https://github.com/phuse-org/phuse-scripts",
   rep_dir = "tree/master",
   rep_base = "https://raw.githubusercontent.com/phuse-org/phuse-scripts/master",
-  out_type = "fn", work_dir = NULL, output_fn = NULL,
-  days_to_update = 7, fn_only = FALSE)
+  out_type = "fn",
+  work_dir = NULL,
+  output_fn = NULL,
+  days_to_update = 7,
+  fn_only = FALSE
+)
 }
 \arguments{
 \item{filename}{file names to be searched; default to *.yml.}
